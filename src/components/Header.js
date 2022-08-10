@@ -1,13 +1,11 @@
 import styled from "styled-components";
 import { IoIosArrowDown } from "react-icons/io";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function Header(){
+export default function Header({ click, setClick, show, setShow, hide }){
 
     const imgUrl = "https://bk.ibxk.com.br/2020/09/28/28161054293196.jpg"; //substituir pela imagem que vem do back
-
-    const [click, setClick] = useState(false);
-    const [show, setShow] = useState(false);
+    const navigate = useNavigate();
 
     function toggleShow(){
 
@@ -18,22 +16,26 @@ export default function Header(){
             setShow(false);
             setClick(false);
         }
+        
     }
 
     function userLogout(){
-        
+
+        localStorage.removeItem("user"); //verificar como está armazenado no local storage
+        navigate("/");
+
     }
 
     return (
         <>
-            <Container>
+            <Container onClick={hide}>
                 <span>linkr</span>
                 <User>
-                    <Arrow onClick={toggleShow}/>
+                    <Arrow onClick={toggleShow} isClicked={click}/>
                     <img src={imgUrl} alt="user" onClick={toggleShow} />
                 </User>
             </Container>
-            <Menu isClicked={click} show={show}>
+            <Menu show={show}>
                 <span onClick={userLogout}>Logout</span>
             </Menu>
         </>
@@ -80,7 +82,7 @@ const User = styled.div `
 
 const Arrow = styled(IoIosArrowDown)`
     color: white;
-    transform: scale(2);
+    transform: scale(2) ${props => props.isClicked ? "rotate(180deg)" : "rotate(0deg)"};
     cursor: pointer;
 `
 
@@ -95,7 +97,11 @@ const Menu = styled.div `
     top: 70px;
     right: 0px;
     border-radius: 0px 0px 0px 20px;
-    color: white;
-    font-weight: 700;
-    font-size: 15px;
+
+    span {
+        color: white;
+        font-weight: 700;
+        font-size: 15px;
+        cursor: pointer;
+    }
 `
