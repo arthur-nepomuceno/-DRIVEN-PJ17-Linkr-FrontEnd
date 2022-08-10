@@ -3,3 +3,11 @@
 * {
     box-sizing: border-box;
 }
+
+@media (max-width: 1080px){
+    #root {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}
