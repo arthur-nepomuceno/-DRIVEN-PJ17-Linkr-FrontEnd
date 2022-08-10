@@ -1,29 +1,40 @@
 import styled from "styled-components";
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function SignUp(){
     
-    const [email, setEmail] = useState(null);
-    const [password, setPassword] = useState(null);
-    const [userName, setUserName] = useState(null);
-    const [pictureUrl, setPictureUrl] = useState(null);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [userName, setUserName] = useState('');
+    const [pictureUrl, setPictureUrl] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const API = 'http://localhost:5000/signup';
+    const navigate = useNavigate();
 
     async function Send(event){
         event.preventDefault();
         const body = {email, password, userName, pictureUrl};
+        setLoading(true);
         try{
             const response = await axios.post(API, body);
+            setLoading(false);
+            navigate('/');
             return console.log(response);
         } catch(error){
-            return console.log(error);
+            setLoading(false);
+            if(error.response.status === 401){
+                return alert ('Email or username unavailable.')
+            } else {
+                return console.log(error.response.data);
+            }
         }
     }
 
     return (
-        <Container>
+        <Container buttonColor={loading ? '#9F9F9F' : '#1877F2'}>
             <div id="title">
                 <h1>
                     linkr
@@ -34,13 +45,15 @@ export default function SignUp(){
             </div>
             <div id="content">
                 <form onSubmit={Send}>
-                    <input type="email" placeholder="e-mail" value={'driven@email.com'} onChange={e => {setEmail(e.target.value)}} required/>
-                    <input type="password" placeholder="password" value={'12345678909'} onChange={e => {setPassword(e.target.value)}} required/>
-                    <input type="text" placeholder="username" value={'driven'} onChange={e => {setUserName(e.target.value)}} required/>
-                    <input type="url" placeholder="picture url" value={'https://media.glassdoor.com/sqll/5837209/driven-brazil-squareLogo-1631636568127.png'} onChange={e => {setPictureUrl(e.target.value)}} required/>
-                    <button type="submit">Sign Up</button>
+                    <input type="email" placeholder="e-mail" value={email} onChange={e => {setEmail(e.target.value)}} required/>
+                    <input type="password" placeholder="password" value={password} onChange={e => {setPassword(e.target.value)}} required/>
+                    <input type="text" placeholder="username" value={userName} onChange={e => {setUserName(e.target.value)}} required/>
+                    <input type="url" placeholder="picture url" value={pictureUrl} onChange={e => {setPictureUrl(e.target.value)}} required/>
+                    <button type="submit" disabled={loading}>Sign Up</button>
                 </form>
-                <p>Switch back to log in</p>
+                <Link to={'/'}>
+                    <p>Switch back to log in</p>
+                </Link>
             </div>
         </Container>
     );
@@ -127,11 +140,11 @@ const Container = styled.div`
         font-size: 27px;
         color: #9F9F9F;
     }
-
+    
     button {
         width: 80%;
         height: 17%;
-        background-color: #1877F2;
+        background-color: ${props => props.buttonColor};
         border-radius: 6px;
         border-style: none;
         font-family: 'Oswald';
@@ -146,7 +159,7 @@ const Container = styled.div`
     }
 
     p {
-        width: 37%;
+        width: fit-content;
         font-family: 'Lato', sans-serif;
         font-style: normal;
         font-weight: 400;
@@ -156,6 +169,7 @@ const Container = styled.div`
         color: #FFFFFF;
         position: absolute;
         top: 65%;
+        left: 33%;
     }
 
     p:hover{
@@ -231,11 +245,9 @@ const Container = styled.div`
 
         p {
             top: 440px;
+            left: 37%;
         }
-
     }
-
-
 
     @media (max-width: 720px){
         flex-direction: column;
@@ -289,9 +301,9 @@ const Container = styled.div`
         p {
             width: 41%;
             top: 380px;
+            left: 29%;
             font-size: 17px;
         }
-
     }
 `
 
