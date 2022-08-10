@@ -1,24 +1,45 @@
 import styled from "styled-components";
+import axios from "axios";
+import { useState } from "react";
 
-export default function signUp(){
+export default function SignUp(){
+    
+    const [email, setEmail] = useState(null);
+    const [password, setPassword] = useState(null);
+    const [userName, setUserName] = useState(null);
+    const [pictureUrl, setPictureUrl] = useState(null);
+
+    const API = 'http://localhost:5000/signup';
+
+    async function Send(event){
+        event.preventDefault();
+        const body = {email, password, userName, pictureUrl};
+        try{
+            const response = await axios.post(API, body);
+            return console.log(response);
+        } catch(error){
+            return console.log(error);
+        }
+    }
+
     return (
         <Container>
             <div id="title">
                 <h1>
                     linkr
-                </h1>
+                </h1>https://www.thunderclient.com/welcome
                 <h2>
                     save, share and discover the best links on the web
                 </h2>
             </div>
             <div id="content">
-                <div>
-                    <input type="email" placeholder="e-mail" required/>
-                    <input type="password" placeholder="password" required/>
-                    <input type="text" placeholder="username" required/>
-                    <input type="url" placeholder="picture url" required/>
-                    <button>Sign Up</button>
-                </div>
+                <form onSubmit={Send}>
+                    <input type="email" placeholder="e-mail" value={'driven@email.com'} onChange={e => {setEmail(e.target.value)}} required/>
+                    <input type="password" placeholder="password" value={'12345678909'} onChange={e => {setPassword(e.target.value)}} required/>
+                    <input type="text" placeholder="username" value={'driven'} onChange={e => {setUserName(e.target.value)}} required/>
+                    <input type="url" placeholder="picture url" value={'https://media.glassdoor.com/sqll/5837209/driven-brazil-squareLogo-1631636568127.png'} onChange={e => {setPictureUrl(e.target.value)}} required/>
+                    <button type="submit">Sign Up</button>
+                </form>
                 <p>Switch back to log in</p>
             </div>
         </Container>
@@ -74,7 +95,7 @@ const Container = styled.div`
         justify-content: center;
     }
 
-    div#content div {
+    div#content form {
         width: 100%;
         height: 37%;
         display: flex;
@@ -204,7 +225,7 @@ const Container = styled.div`
             width: 100%;
         }
 
-        div#content div {
+        div#content form {
             top: 40px;
         }
 
@@ -251,7 +272,7 @@ const Container = styled.div`
             width: 100%;
         }
 
-        div#content div {
+        div#content form {
             top: 40px;
         }
 
