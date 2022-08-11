@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 import Header from "../components/Header";
+import HashtagBox from "../components/HashtagBox";
 
 export default function Timeline(){
 
@@ -23,6 +24,7 @@ export default function Timeline(){
                 setShow={setShow} 
                 hide={hide}
             />
+            <HashtagBox />
         </Container>
     );
 

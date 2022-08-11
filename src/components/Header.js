@@ -7,10 +7,11 @@ import UserContext from "../contexts/UserContext";
 
 export default function Header({ click, setClick, show, setShow, hide }){
 
-    const {token} = useContext(UserContext);
+    const { token } = useContext(UserContext);
     const decode = decodeToken(token.token);
-    const imgUrl = decode.pictureUrl;
+    /* const imgUrl = decode.pictureUrl; */
     const navigate = useNavigate();
+    const imgUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSz4tR5Pa3dUf07TBnwvjmXppzmJdgCsHT72g&usqp=CAU";
 
     function toggleShow(){
         if(show === false){
