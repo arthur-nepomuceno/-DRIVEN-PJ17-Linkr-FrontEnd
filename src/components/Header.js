@@ -1,14 +1,18 @@
 import styled from "styled-components";
+import { decodeToken } from "react-jwt";
 import { IoIosArrowDown } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import UserContext from "../contexts/UserContext";
 
 export default function Header({ click, setClick, show, setShow, hide }){
 
-    const imgUrl = "https://bk.ibxk.com.br/2020/09/28/28161054293196.jpg"; //substituir pela imagem que vem do back
+    const {token} = useContext(UserContext);
+    const decode = decodeToken(token.token);
+    const imgUrl = decode.pictureUrl;
     const navigate = useNavigate();
 
     function toggleShow(){
-
         if(show === false){
             setShow(true);
             setClick(true);
@@ -20,7 +24,6 @@ export default function Header({ click, setClick, show, setShow, hide }){
     }
 
     function userLogout(){
-
         localStorage.removeItem("user"); //verificar como está armazenado no local storage
         navigate("/");
 

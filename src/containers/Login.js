@@ -1,32 +1,36 @@
 import styled from "styled-components";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import UserContext from "../contexts/UserContext";
 
-export default function SignUp(){
+export default function Login(){
     
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [userName, setUserName] = useState('');
-    const [pictureUrl, setPictureUrl] = useState('');
     const [loading, setLoading] = useState(false);
+    const {setToken} = useContext(UserContext);
 
-    const API = 'http://localhost:5000/signup';
+    const API = 'http://localhost:5000/signin';
     const navigate = useNavigate();
 
     async function Send(event){
         event.preventDefault();
-        const body = {email, password, userName, pictureUrl};
+        const body = {email, password};
         setLoading(true);
-        try{
+        try {
+
             const response = await axios.post(API, body);
+            setToken(response.data)
             setLoading(false);
-            navigate('/');
-            return console.log(response);
-        } catch(error){
+            navigate('/timeline');
+            return;
+
+        } catch(error) {
+
             setLoading(false);
             if(error.response.status === 401){
-                return alert ('Email or username unavailable.')
+                return alert ('Email or password invalid.')
             } else {
                 return console.log(error.response.data);
             }
@@ -47,12 +51,10 @@ export default function SignUp(){
                 <form onSubmit={Send}>
                     <input type="email" placeholder="e-mail" value={email} onChange={e => {setEmail(e.target.value)}} required/>
                     <input type="password" placeholder="password" value={password} onChange={e => {setPassword(e.target.value)}} required/>
-                    <input type="text" placeholder="username" value={userName} onChange={e => {setUserName(e.target.value)}} required/>
-                    <input type="url" placeholder="picture url" value={pictureUrl} onChange={e => {setPictureUrl(e.target.value)}} required/>
-                    <button type="submit" disabled={loading}>Sign Up</button>
+                    <button type="submit" disabled={loading}>Log in</button>
                 </form>
-                <Link to={'/'}>
-                    <p>Switch back to log in</p>
+                <Link to={'/signup'}>
+                    <p>First time? Create an account!</p>
                 </Link>
             </div>
         </Container>
@@ -115,7 +117,7 @@ const Container = styled.div`
         flex-direction: column;
         align-items: center;
         position: absolute;
-        top: 27%;
+        top: 31%;
     }
 
     input {
@@ -168,8 +170,8 @@ const Container = styled.div`
         text-decoration-line: underline;
         color: #FFFFFF;
         position: absolute;
-        top: 65%;
-        left: 33%;
+        top: 55%;
+        left: 26%;
     }
 
     p:hover{
@@ -188,7 +190,8 @@ const Container = styled.div`
 
     @media (max-height: 750px){
         p {
-            top: 70%;
+            top: 60%;
+            left: 25%;
         }
 
         input {
@@ -244,8 +247,8 @@ const Container = styled.div`
         }
 
         p {
-            top: 440px;
-            left: 37%;
+            top: 295px;
+            left: 32%;
         }
     }
 
@@ -299,9 +302,9 @@ const Container = styled.div`
         }
 
         p {
-            width: 41%;
-            top: 380px;
-            left: 29%;
+            width: fit-content;
+            top: 245px;
+            left: 20%;
             font-size: 17px;
         }
     }
