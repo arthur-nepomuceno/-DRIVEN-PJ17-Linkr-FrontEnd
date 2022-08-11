@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import Header from "../components/Header";
 
-export default function DefaultPage(){
+export default function Timeline(){
 
     const [click, setClick] = useState(false);
     const [show, setShow] = useState(false);
