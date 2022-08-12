@@ -1,15 +1,43 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 export default function HashtagBox(){
+
+    const [trendingHashtags, setTrendingHashtags] = useState("");
+
+    useEffect(() => {
+
+        const promise = axios.get('http://localhost:5000/hashtag');
+
+        promise
+            .then(response => {
+                setTrendingHashtags(response.data);
+                console.log(response.data);
+            })
+            .catch(() => {
+                alert("Try again later");
+            });
+
+    });
+
 
     return (
         <Box>
             <Title>trending</Title>
             <Line></Line>
-            <Hashtags># Teste</Hashtags>
-            <Hashtags># TESTE 2</Hashtags>
-            <Hashtags># difdebiuhvcbfruvhbfcriuvbcribvirvbrvbikkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk</Hashtags>
+            {trendingHashtags.map((render, index) => 
+                (<Hashtags hashtag={render.hashtag} key={index} />)
+            )}
         </Box>
+    );
+
+}
+
+function Hashtags({ hashtag }){
+
+    return (
+        <Hashtag>{ hashtag }</Hashtag>
     );
 
 }
@@ -41,7 +69,7 @@ const Line = styled.div `
     margin-bottom: 10px;
 `
 
-const Hashtags = styled.div `
+const Hashtag = styled.div `
     width: 100%;
     min-height: 40px;
     display: flex;
