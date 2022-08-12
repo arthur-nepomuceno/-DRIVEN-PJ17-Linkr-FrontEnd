@@ -21,6 +21,15 @@ export default function HashtagBox(){
 
     });
 
+    if(trendingHashtags === ""){
+        return (
+            <Box>
+                <Title>trending</Title>
+                <Line></Line>
+                <Hashtags hashtag="Nothing trending" />
+            </Box>
+        );
+    }
 
     return (
         <Box>
