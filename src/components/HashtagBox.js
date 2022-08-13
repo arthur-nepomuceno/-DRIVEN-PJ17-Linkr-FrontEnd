@@ -1,16 +1,21 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import useAxios from "../hooks/useAxios";
 
 export default function HashtagBox(){
 
     const API = "/hashtag";
+    const navigate = useNavigate();
 
     const [{ data }] = useAxios({
                                     method: "get",
                                     url: API,
                                 });
 
-    function redirectHashtagPage(){
+    function redirectHashtagPage(hashtag){
+
+        const address = hashtag.slice(1,hashtag.length);
+        navigate('/hashtag/' + address);
         
     }
 
@@ -39,7 +44,7 @@ export default function HashtagBox(){
 function Hashtags({ hashtag, callback }){
 
     return (
-        <Hashtag onClick={callback}>{ hashtag }</Hashtag>
+        <Hashtag onClick={() => callback(hashtag)}>{ hashtag }</Hashtag>
     );
 
 }
