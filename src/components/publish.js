@@ -3,12 +3,25 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAxios from "../hooks/useAxios";
 
+import { decodeToken } from "react-jwt";
+
+import { useContext } from "react";
+import UserContext from "../contexts/UserContext";
+
+
 export default function Publish(){
     const [url, setUrl] = useState('');
-    const [comment, setComment] = useState('');
+    const [content, setContent] = useState('');
     const navigate = useNavigate();
     const API = "/publish"
-    const [{ data, isLoading, error }, executePost] = useAxios({ method: 'POST', route: API }, true)
+    const { token } = useContext(UserContext);
+    const decode = decodeToken(token.token);
+    const config = {
+        headers: { 'Authorization': `Bearer ${token.token}` }
+    };
+   
+    const [{ data, isLoading, error }, executePost] = useAxios({ method: 'POST', route: API, config }, true)
+    const imgUrl = decode.pictureUrl;
 
     const Publish = (event)=>{
         event.preventDefault();
@@ -17,60 +30,55 @@ export default function Publish(){
         if (!isURL){
            return alert ('Url invalid.')
         }
-        const body = {url, comment};
-        executePost(body) 
+        const body = {url, content};
+        executePost(body, config) 
     }
 
     return (
         <Container buttonColor={isLoading ? '#9F9F9F' : '#1877F2'}>
-             <div id="img"></div>
-
+                <div id="img"><img src={imgUrl} alt="user" /></div>
                 <div id="content">
                     <div id="text">
                          <h1> What are you going to share today?</h1>
                     </div>
-                    
                     <form onSubmit={Publish}>
-                        <input type="text" placeholder="http://..." value={url} onChange={e => {setUrl(e.target.value)}} required/>
-                        <input type="text" placeholder="Awesome article about #javascript" value={comment} onChange={e => {setComment(e.target.value)}}/>
-                       
-                        <button type="submit"> 
+                        <input type="text" placeholder="http://..." value={url} onChange={e => {setUrl(e.target.value)}}  disabled={isLoading} required/>
+                        <input id="content" type="text" placeholder="Awesome article about #javascript" value={content} onChange={e => {setContent(e.target.value)}} disabled={isLoading}/>
+                       <div id="teste">
+                       <button type="submit"> 
                         {isLoading ? (<p>Publishing ...</p>) : (<p>Publish</p>)}
-                        
-                        
-                        </button>
-                      
-                        
-                    </form>
+                       </button>
+                       </div>    
+                   </form>
               </div>
-         
         </Container>
     );
 }
 
 const Container = styled.div`
     width: 42%;
-    
+    height: 170px;
     background: #FFFFFF;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 16px;
     display: flex;
     margin: 70px 0px 0px 250px;
    
-    div#img{
+   
+    img{
         width: 50px;
         height: 50px;
-        background: red;
-        margin: 16px 0px 0px 18px;
+        margin: 5px 0px 0px 5px;
         border-radius: 26.5px;
     }
-    
+    div#img{
+        width: 10%;
+    }
     div#content {
-        width: 80%;
+        width: 90%;
         display: flex;
         flex-direction: column;
-        align-items: flex-end;
-        margin: 16px 0px 0px 18px;
+        margin: 0px 0px 0px 0px;
     }
 
     div#content form {
@@ -79,10 +87,7 @@ const Container = styled.div`
         flex-direction: column;
         align-items: center;
      }
-     div#text{
-        
-    }
-    
+       
      div#content h1 {
         font-family: 'Lato', sans-serif;
         font-style: normal;
@@ -90,17 +95,16 @@ const Container = styled.div`
         font-size: 20px;
         line-height: 24px;
         color: #707070;
-        margin: 5px 0px 10px 18px;
+        margin: 5px 0px 5px 18px;
         display: flex;
         justify-content: flex-start;
     }
     input {
         width: 100%;
-        height: 17%;
+        height: 37%;
         background: #EFEFEF;
         border-radius: 5px;
-        margin-bottom: 3%;
-        padding-left: 17px;
+        margin-bottom: 1%;
         outline: none;
         border: none;
         font-family: 'Oswald', sans-serif;
@@ -116,12 +120,18 @@ const Container = styled.div`
         font-size: 15px;
         line-height: 18px;
         color: #949494;
-     
     }
-    
+
+    input#content{
+        height: 97%
+    }
+    div#teste{
+        width: 140%;
+        display: flex;
+        justify-content: flex-end;
+    }
     button {
         width: 30%;
-        height: 20%;
         background: #1877F2;
         border-radius: 6px;
         display: flex;
@@ -142,6 +152,9 @@ const Container = styled.div`
 
   
     @media (max-height: 810px){
+        img{
+            display:none;
+        }
         h1 {
             font-size: 83px;
         }
