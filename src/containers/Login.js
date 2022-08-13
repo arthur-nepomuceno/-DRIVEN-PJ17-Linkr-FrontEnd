@@ -172,6 +172,7 @@ const Container = styled.div`
         position: absolute;
         top: 55%;
         left: 26%;
+        margin-top: 10px;
     }
 
     p:hover{

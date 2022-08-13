@@ -26,8 +26,12 @@ export default function SignUp(){
         } catch(error){
             setLoading(false);
             if(error.response.status === 401){
-                return alert ('Email or username unavailable.')
-            } else {
+                return alert ('Email or username unavailable.');
+            }
+            if(error.response.status === 422){
+                return alert ('Your password must be at least 11 digits');
+            }
+            else {
                 return console.log(error.response.data);
             }
         }
@@ -170,6 +174,7 @@ const Container = styled.div`
         position: absolute;
         top: 65%;
         left: 33%;
+        margin-top: 10px;
     }
 
     p:hover{
