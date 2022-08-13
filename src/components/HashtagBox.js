@@ -1,27 +1,20 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import styled from "styled-components";
+import useAxios from "../hooks/useAxios";
 
 export default function HashtagBox(){
 
-    const [trendingHashtags, setTrendingHashtags] = useState("");
+    const API = "/hashtag";
 
-    useEffect(() => {
+    const [{ data }] = useAxios({
+                                    method: "get",
+                                    url: API,
+                                });
 
-        const promise = axios.get('http://localhost:5000/hashtag');
+    function redirectHashtagPage(){
+        
+    }
 
-        promise
-            .then(response => {
-                setTrendingHashtags(response.data);
-                console.log(response.data);
-            })
-            .catch(() => {
-                alert("Try again later");
-            });
-
-    });
-
-    if(trendingHashtags === ""){
+    if(data === ""){
         return (
             <Box>
                 <Title>trending</Title>
@@ -35,18 +28,18 @@ export default function HashtagBox(){
         <Box>
             <Title>trending</Title>
             <Line></Line>
-            {trendingHashtags.map((render, index) => 
-                (<Hashtags hashtag={render.hashtag} key={index} />)
+            {data.map((render, index) => 
+                (<Hashtags hashtag={render.hashtag} callback={redirectHashtagPage} key={index} />)
             )}
         </Box>
     );
 
 }
 
-function Hashtags({ hashtag }){
+function Hashtags({ hashtag, callback }){
 
     return (
-        <Hashtag>{ hashtag }</Hashtag>
+        <Hashtag onClick={callback}>{ hashtag }</Hashtag>
     );
 
 }
@@ -59,7 +52,6 @@ const Box = styled.div `
     color: white;
     font-weight: 700;
     border-radius: 15px;
-    margin: 70px 0px 0px 400px;
 `
 
 const Title = styled.span `
@@ -85,4 +77,5 @@ const Hashtag = styled.div `
     font-size: 18px;
     padding: 15px;
     word-break: break-all;
+    cursor: pointer;
 `
