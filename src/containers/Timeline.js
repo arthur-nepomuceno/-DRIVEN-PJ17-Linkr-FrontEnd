@@ -2,8 +2,9 @@ import styled from "styled-components";
 import { useState, useEffect, useContext } from "react";
 import UserContext from "../contexts/UserContext";
 import Header from "../components/Header";
-import Post from "../components/Post";
+import Post from "../components/Post";  
 import axios from "axios";
+import HashtagBox from "../components/HashtagBox";
 
 export default function Timeline(){
     const [click, setClick] = useState(false);
@@ -32,11 +33,20 @@ export default function Timeline(){
 
     return (
         <Container onClick={hide}>
-            <Header click={click} setClick={setClick} show={show} setShow={setShow} hide={hide}/>
-            <div id="posts">
-                <Post/>
-                <Post/>
-            </div>
+            <Header 
+                click={click} 
+                setClick={setClick} 
+                show={show} 
+                setShow={setShow} 
+                hide={hide}
+            />
+            <TimelinePage>
+                <Title>timeline</Title>
+                <Content>
+                    <Posts></Posts>
+                    <HashtagBox />
+                </Content>
+            </TimelinePage>
         </Container>
     );
 
@@ -46,4 +56,33 @@ const Container = styled.div `
     width: 100vw;
     height: 100vh;
     background-color: #333333;
+`
+
+const TimelinePage = styled.div `
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+`
+
+const Title = styled.div `
+    width: 70%;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    color: white;
+    font-size: 45px;
+    font-weight: 700;
+    margin-top: 70px;
+`
+
+const Content = styled.div `
+    width: 70%;
+    display: flex;
+`
+
+const Posts = styled.div `
+    width: 70%;
+    background-color: gray;
+    margin-right: 30px;
 `

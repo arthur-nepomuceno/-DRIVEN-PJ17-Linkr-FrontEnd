@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from 'axios';
 
-
 //function that creates a querystring if requested
 function queryStringBuilder(query = {}) {
     //query must be an object
@@ -26,7 +25,7 @@ function useAxios({ method, url, payloadHeaders, payloadBody, query }, manual = 
     const [error, setError] = useState(null);
     const [response, setResponse] = useState(null);
 
-    axios.defaults.baseURL = process.env.AXIOS_DEFAULT_URL;
+    axios.defaults.baseURL = /* process.env.AXIOS_DEFAULT_URL*/  "http://localhost:5000"/* process.env.REACT_APP_API_URL */;
 
     const config = {
         method,
