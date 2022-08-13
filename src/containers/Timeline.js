@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 import Header from "../components/Header";
+import Publish from "../components/publish";
 
 export default function Timeline(){
 
@@ -23,6 +24,8 @@ export default function Timeline(){
                 setShow={setShow} 
                 hide={hide}
             />
+
+           <Publish /> 
         </Container>
     );
 

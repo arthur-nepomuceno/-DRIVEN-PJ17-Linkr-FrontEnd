@@ -19,18 +19,18 @@ function queryStringBuilder(query = {}) {
     return result;
 }
 
-function useAxios({ method, url, payloadHeaders, payloadBody, query }, manual = false) {
+function useAxios({ method, route, payloadHeaders, payloadBody, query }, manual = false) {
 
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(!manual);
     const [error, setError] = useState(null);
     const [response, setResponse] = useState(null);
 
-    axios.defaults.baseURL = process.env.AXIOS_DEFAULT_URL;
+    axios.defaults.baseURL = /*process.env.AXIOS_DEFAULT_URL */ "http://localhost:5000/";
 
     const config = {
         method,
-        url: `${url}${queryStringBuilder(query)}`,
+        url: `${route}${queryStringBuilder(query)}`,
     };
 
     async function executeRequest(body = payloadBody, headers = null, callback = null) {
@@ -81,7 +81,7 @@ export default useAxios;
  *          method: Qual método você vai utilizar (get, post, ...),
  *          route: Qual a rota ('/', '/users', ...),
  *          headers: Caso tenha hearder passe as informações aqui,
- *      }, false);
+ *      }, false;)
  * 
  *  DATA vai retornar o 'promisse.data', ou seja, na maioria das vezes o que se espera quando faz uma req a uma API,
  *  isLoading é um booleano que diz se o hook está carregando as informações ou não, pode ser usado para renderizar uma tela de loading,
