@@ -2,9 +2,34 @@ import styled from "styled-components";
 import { ImPencil2 } from "react-icons/im";
 import { FaTrash } from "react-icons/fa";
 import { HiOutlineHeart } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 export default function Post({userImage, userName, postDescription, urlTitle, urlDescription, postUrl, urlImage, likesCount, likedBy}){
+    
+    const [edit, setEdit] = useState(false);
+    const [newPost, setNewPost] = useState(postDescription);
+
+    function editPost(){
+        if(edit === false){
+            setEdit(true);
+        } else {
+            setEdit(false);
+            setNewPost(postDescription);
+        }
+    }
+
+    function pressKey(event){
+        if(event.key === 'Escape' && edit === true){
+            setEdit(false);
+            setNewPost(postDescription);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('keydown', pressKey, true)
+    }, [])
+
+    
     return (
         <Container>
             <div id="user">
@@ -18,13 +43,14 @@ export default function Post({userImage, userName, postDescription, urlTitle, ur
             </div>
             <div id="head">
                 <h1>{userName}</h1>
-                <div id="edit">
+                <div id="edit" onClick={editPost}>
                     <ImPencil2 cursor="pointer"/>
                 </div>
                 <div id="delete">
                     <FaTrash cursor="pointer"/>
                 </div>
-                <h2>{postDescription}</h2>
+                <h2>{!edit? postDescription 
+                          : <textarea type="text" autoFocus={edit} maxLength="120" value={newPost} onChange={e => setNewPost(e.target.value)}/>}</h2>
             </div>
             <a href={postUrl} target="_blank">
                 <div id="url">
@@ -75,8 +101,6 @@ const Container = styled.div`
         align-items: center;      
     }
 
-    
-
     div#like h5 {
         font-size: 11px;
         line-height: 13px;
@@ -99,6 +123,8 @@ const Container = styled.div`
     }
 
     div#head h2 {
+        width: 100%;
+        max-height: 52px;
         font-family: 'Lato';
         font-style: normal;
         font-weight: 400;
@@ -107,6 +133,20 @@ const Container = styled.div`
         color: #B7B7B7;
         position: absolute;
         top: 37%;
+    }
+
+    div#head textarea {
+        width: 100%;
+        height: 44px;
+        outline: none;
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 17px;
+        color: #4C4C4C;
+        border-radius: 7px;
+        padding-left: 10px;
     }
 
     div#edit {
