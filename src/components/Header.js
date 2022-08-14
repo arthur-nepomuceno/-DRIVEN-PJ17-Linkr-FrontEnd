@@ -56,14 +56,15 @@ const Container = styled.div `
     position: fixed;
     top: 0px;
     left: 0px;
+    z-index: 1;
 
     span {
         color: white;
+        font-family: 'Passion One';
         font-weight: 700;
         font-size: 50px;
         margin-left: 20px;
     }
-
 `
 
 const User = styled.div `

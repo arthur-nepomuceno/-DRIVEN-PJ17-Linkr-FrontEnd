@@ -50,13 +50,20 @@ function Hashtags({ hashtag, callback }){
 }
 
 const Box = styled.div `
-    width: 300px;
+    width: 21%;
     display: flex;
     flex-direction: column;
     background-color: #171717;
     color: white;
     font-weight: 700;
     border-radius: 15px;
+    position: absolute;
+    top: 23%;
+    right: 18%;
+
+    @media (max-width: 1080px) {
+        display: none;
+    }
 `
 
 const Title = styled.span `

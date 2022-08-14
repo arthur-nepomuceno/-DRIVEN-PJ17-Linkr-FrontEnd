@@ -1,49 +1,53 @@
 import styled from "styled-components";
 import { ImPencil2 } from "react-icons/im";
 import { FaTrash } from "react-icons/fa";
-import { HiOutlineHeart } from "react-icons/hi"
+import { HiOutlineHeart } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 export default function Post({userImage, userName, postDescription, urlTitle, urlDescription, postUrl, urlImage, likesCount, likedBy}){
     return (
         <Container>
             <div id="user">
-                <img src="https://madreclelia.org/wp-content/uploads/2018/05/maria.jpg" alt="foto do usuário"/>
+                <img src={userImage} alt="foto do usuário"/>
                 <div id="like">
-                    <HiOutlineHeart size={20}/>
-                    <h5>13 likes</h5>
+                    <HiOutlineHeart size={20} cursor="pointer"/>
+                    {likesCount === '0' ? '' 
+                                        : likesCount === '1' ? <h5>{likesCount} like</h5>
+                                                             : <h5>{likesCount} likes</h5>}
                 </div>
             </div>
             <div id="head">
-                <h1>Maria Joaquina</h1>
+                <h1>{userName}</h1>
                 <div id="edit">
-                    <ImPencil2/>
+                    <ImPencil2 cursor="pointer"/>
                 </div>
                 <div id="delete">
-                    <FaTrash/>
+                    <FaTrash cursor="pointer"/>
                 </div>
-                <h2>Olha que legal essa lib para trabalhar com datas! #lib #react</h2>
+                <h2>{postDescription}</h2>
             </div>
-            <div id="url">
-                <h3>HTTP Cats</h3>
-                <h4>An API for the awesome HTTP Cats! Use it in your website to show funny error messages.</h4>
-                <h5>https://http.cat/</h5>
-                <img src="https://http.cat/100.jpg" alt="imagem da url"/>
-            </div>
+            <a href={postUrl} target="_blank">
+                <div id="url">
+                    <h3>{urlTitle}</h3>
+                    <h4>{urlDescription}</h4>
+                    <h5>{postUrl}</h5>
+                    <img src={urlImage} alt="imagem da url"/>
+                </div> 
+            </a>
         </Container>
     );
 }
 
 const Container = styled.div`
-    width: 42%;
-    height: 27%;
+    width: 100%;
+    min-height: 276px;
     background-color: #171717;
     border-radius: 16px;
-    position: absolute;
-    top: 46%;
-    left: 17%;
+    position: relative;
     font-family: 'Lato';
     font-style: normal;
     font-weight: 400;
+    margin-bottom: 16px;
 
     div#user {
         width: 50px;
@@ -77,6 +81,7 @@ const Container = styled.div`
         font-size: 11px;
         line-height: 13px;
         text-align: center;
+        margin-top: 3px;
     }
 
     div#head {
@@ -85,7 +90,6 @@ const Container = styled.div`
         position: absolute;
         top: 7%;
         left: 14%;
-        border: 1px dashed white;
     }
 
     div#head h1 {
@@ -141,6 +145,7 @@ const Container = styled.div`
         position: absolute;
         top: 15%;
         left: 4%;
+        overflow-y: hidden;
     }
 
     div#url h4 {
@@ -150,8 +155,9 @@ const Container = styled.div`
         line-height: 13px;
         color: #9B9595;
         position: absolute;
-        top: 43%;
+        top: 33%;
         left: 4%;
+        overflow-y: hidden;
     }
 
     div#url h5 {
@@ -169,8 +175,100 @@ const Container = styled.div`
         width: 155px;
         height: 155px;
         position: absolute;
-        right: 0%;
-        bottom: 0%;
+        right: -1%;
+        bottom: -1%;
         border-radius: 0px 12px 12px 0px;
+    }
+
+    @media (max-width: 1080px){
+        min-height: 232px;
+        border-radius: 0px;
+
+        div#user {
+            width: 40px;
+            height: 41%;
+            top: 4%;
+            left: 4%;  
+        }
+
+        div#user img {
+            width: 40px;
+            height: 40px;
+        }
+
+        div#like {
+            top: 55%;
+        }
+
+        div#like h5 {
+            font-size: 9px;
+            line-height: 11px;
+            margin-top: 12px;
+        }
+
+        div#head {
+            width: 77%;
+            height: 38%;
+            top: 4%;
+            left: 18%;
+        }
+
+        div#head h1 {
+            font-size: 17px;
+            line-height: 20px;
+        }
+
+        div#head h2 {
+            font-size: 15px;
+            line-height: 18px;
+            bottom: 0%;
+        }
+
+        div#edit {
+            right: 11%;
+        }
+
+        div#delete {
+            right: 3%;
+        }
+
+        div#url {
+            width: 77%;
+            height: 50%;
+            bottom: 6%;
+            left: 18%
+        }
+
+        div#url h3 {
+            width: 50%;
+            height: 23%;
+            font-size: 11px;
+            line-height: 13px;
+            top: 6%;
+            left: 4%;
+        }
+
+        div#url h4 {
+            width: 63%;
+            height: 44px;
+            font-size: 9px;
+            line-height: 11px;
+            top: 28%;
+        }
+
+        div#url h5 {
+            width: 52%;
+            height: 8%;
+            font-size: 9px;
+            line-height: 11px;
+            top: 74%;
+        }
+
+        div#url img {
+            width: 95px;
+            height: 116px;
+            right: -1%;
+            bottom: -1%;
+        }
     }
 `
