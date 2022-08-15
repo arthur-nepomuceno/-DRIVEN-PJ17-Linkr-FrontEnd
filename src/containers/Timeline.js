@@ -40,7 +40,7 @@ export default function Timeline(){
             
         }
     }
-    useEffect(() => {getPosts()}, [])
+    useEffect(() => {getPosts()}, [modal])
 
     async function confirmDeletePost(){
         try {
