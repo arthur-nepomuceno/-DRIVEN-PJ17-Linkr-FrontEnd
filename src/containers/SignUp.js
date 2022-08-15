@@ -11,11 +11,12 @@ export default function SignUp(){
     const [pictureUrl, setPictureUrl] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const API = 'http://localhost:5000/signup';
+    const API = process.env.REACT_APP_AXIOS_URL + '/signup';
     const navigate = useNavigate();
 
     async function Send(event){
         event.preventDefault();
+        console.log(API+' '+process.env.REACT_APP_TEST_SOME_KEY)
         const body = {email, password, userName, pictureUrl};
         setLoading(true);
         try{

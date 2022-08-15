@@ -25,7 +25,7 @@ function useAxios({ method, url, payloadHeaders, payloadBody, query }, manual = 
     const [error, setError] = useState(null);
     const [response, setResponse] = useState(null);
 
-    axios.defaults.baseURL = /* process.env.AXIOS_DEFAULT_URL*/  "http://localhost:5000"/* process.env.REACT_APP_API_URL */;
+    axios.defaults.baseURL = process.env.REACT_APP_AXIOS_URL /* process.env.AXIOS_DEFAULT_URL  "http://localhost:5000"*/ ;
 
     const config = {
         method,
