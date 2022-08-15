@@ -32,7 +32,6 @@ export default function Timeline(){
             const config = {headers: {Authorization: `Bearer ${token.token}`}}
             const response = await axios.get(timelineAPI, config);
             setPosts(response.data);
-            console.log(response.data); 
             return;
         } catch(error) {
             setError(true);
@@ -53,7 +52,6 @@ export default function Timeline(){
         } catch(error) {
             setAwaitServer(false)
             setModal(false);
-            console.log(error.response.data)
             return alert(`It wasn't possible to delete the post.`)
         }
     }
