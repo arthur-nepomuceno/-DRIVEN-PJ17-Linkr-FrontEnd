@@ -8,6 +8,7 @@ import { useState, useContext } from "react";
 import { decodeToken } from "react-jwt";
 import UserContext from "../contexts/UserContext";
 import axios from "axios";
+import { AiFillHeart } from "react-icons/ai";
 
 export default function Post({setModal, postId, userId, userImage, userName, postDescription, urlTitle, urlDescription, postUrl, urlImage, likesCount, likedBy, setThisPost}){
     
@@ -15,10 +16,14 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
     const [newPost, setNewPost] = useState(postDescription);
     const [update, setUpdate] = useState(false);
     const [disable, setDisable] = useState(false);
+    const [deletePostId, setdeletePostId] = useState(null);
     const { token } = useContext(UserContext);
     const decode = decodeToken(token.token);
     const isPostOwner = decode.id === userId;
     const API = `http://localhost:5000/update`;
+    const likeAPI = `http://localhost:5000/like`;
+    const unlikeAPI = `http://localhost:5000/unlike/${deletePostId}`;
+    const[like, setLike] = useState(false)
     const navigate = useNavigate();
 
     function redirectHashtagPage(hashtag){
@@ -69,13 +74,40 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
             }
         }
     };
-
+        async function likePost(){
+        setdeletePostId(postId)
+        const body = {postId};
+        if(like === false){
+        setLike(true);
+        try {
+        const config = {headers: {Authorization: `Bearer ${token.token}`}}
+        await axios.post(likeAPI, body, config);
+        return;
+        } catch(error) {
+        return alert(`It wasn't possible to like the post.`)
+        }
+        }if(like === true) {
+        setLike(false);
+       
+        setdeletePostId(postId)
+        
+        try {
+            const config = {headers: {Authorization: `Bearer ${token.token}`}}
+            await axios.delete(unlikeAPI, config);
+            return;
+            } catch(error) {
+            return alert(`It wasn't possible to like the post.`)
+            }
+        }
+        }
     return (
         <Container>
             <div id="user">
                 <img src={userImage} alt="foto do usuário"/>
                 <div id="like">
-                    <HiOutlineHeart size={20} cursor="pointer"/>
+                <div onClick={likePost}>
+                     {like ? (< AiFillHeart size={20} cursor="pointer" color="red"/> ): (< HiOutlineHeart size={20} cursor="pointer"/>)}
+                </div>
                     {likesCount === '0' ? '' 
                                         : likesCount === '1' ? <h5>{likesCount} like</h5>
                                                              : <h5>{likesCount} likes</h5>}
