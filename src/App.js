@@ -7,6 +7,7 @@ import SignUp from "./containers/SignUp";
 import Login from "./containers/Login";
 import Timeline from "./containers/Timeline"; 
 import HashtagPage from "./containers/HashtagPage";
+import Publish from "./components/publish";
 
 export default function App() {
 

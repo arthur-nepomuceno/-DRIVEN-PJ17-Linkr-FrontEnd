@@ -49,7 +49,7 @@ export default function Login(){
             </div>
             <div id="content">
                 <form onSubmit={Send}>
-                    <input type="email" placeholder="e-mail" value={email} onChange={e => {setEmail(e.target.value)}} required/>
+                    <input type="email" placeholder="e-mail" autoFocus="true" value={email} onChange={e => {setEmail(e.target.value)}} required/>
                     <input type="password" placeholder="password" value={password} onChange={e => {setPassword(e.target.value)}} required/>
                     <button type="submit" disabled={loading}>Log in</button>
                 </form>
