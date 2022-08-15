@@ -18,7 +18,7 @@ function queryStringBuilder(query = {}) {
     return result;
 }
 
-function useAxios({ method, url, payloadHeaders, payloadBody, query }, manual = false) {
+function useAxios({ method, route, payloadHeaders, payloadBody, query }, manual = false) {
 
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(!manual);
@@ -29,7 +29,7 @@ function useAxios({ method, url, payloadHeaders, payloadBody, query }, manual = 
 
     const config = {
         method,
-        url: `${url}${queryStringBuilder(query)}`,
+        url: `${route}${queryStringBuilder(query)}`,
     };
 
     async function executeRequest(body = payloadBody, headers = null, callback = null) {
@@ -55,8 +55,11 @@ function useAxios({ method, url, payloadHeaders, payloadBody, query }, manual = 
             if(callback) {
                 callback();
             }
-
-            setIsLoading(false);
+            let timer;
+            clearTimeout(timer)
+            timer = setTimeout(() => {
+                setIsLoading(false);
+              }, 1000);
         }
     };
 

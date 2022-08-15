@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import UserContext from "../contexts/UserContext";
 import { useState } from "react";
-import { DebounceInput } from 'react-debounce-input';
+import useAxios from '../hooks/useAxios';
 
 export default function Header({ click, setClick, show, setShow, hide }){
 
@@ -15,84 +15,39 @@ export default function Header({ click, setClick, show, setShow, hide }){
     const navigate = useNavigate();
 
     const [searchValue, setSearchValue] = useState('');
+    const [query, setQuery] = useState('');
+
+    const [{ data, isLoading }, executeSearch] = useAxios({method:'GET', route: `/users${query}`}, true);
+
+    function debounce (func, timeout = 300) {
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                func.apply(this,args); }, timeout);
+            }
+        }
+
     
     const onChange = (event) => {
         setSearchValue(event.target.value);
-    }
-    const onSearch = (searchTerm) => {
-        setSearchValue(searchTerm);
-        console.log('buscando por: ', searchTerm);
-    }
-    const dataTest = [
-        {
-            id:1,
-            name: 'lucas'
-        },
-        {
-            id:2,
-            name: 'luciano'
-        },
-        {
-            id:3,
-            name: 'luberson'
-        },
-        {
-            id:4,
-            name: 'lunet'
-        },
-        {
-            id:5,
-            name: 'aluna'
-        },
-        {
-            id:6,
-            name: 'amanda'
-        },
-        {
-            id:7,
-            name: 'manda'
-        },
-        {
-            id:8,
-            name: 'Meg Palharini'
-        },
-        {
-            id:9,
-            name: 'morena'
-        },
-        {
-            id:10,
-            name: 'Medeiros'
-        },
-        {
-            id:11,
-            name: 'Palharini'
-        },
-        {
-            id:12,
-            name: 'Pedro Palharini'
-        },
-        {
-            id:13,
-            name: 'Lucas Palharini'
-        },
-        {
-            id:14,
-            name: 'Nelson'
-        },
-        {
-            id:15,
-            name: 'Gazum'
-        },
-        {
-            id:16,
-            name: 'Pet Cau'
-        },
-        {
-            id:17,
-            name: 'Pet Dim'
+        if(event.target.value.length < 3) {
+            return;
         }
-    ];
+        setQuery(`?search=${event.target.value}`);
+
+        debounce(onSearch());
+    }
+
+    const onClick = (user) => {
+        setSearchValue(user);
+        setQuery(`?search=${user}`);
+        debounce(onSearch());
+    }
+
+    const onSearch = () => {
+        executeSearch(null, { Authorization: `Bearer ${token.token}` });
+    }
 
     function toggleShow(){
         if(show === false){
@@ -110,16 +65,14 @@ export default function Header({ click, setClick, show, setShow, hide }){
         navigate("/");
 
     }
-    
+
     return (
         <>
             <Container onClick={hide}>
                 <span>linkr</span>
                 <SearchContainer>
                     <SearchInner>
-                        <DebounceInput 
-                            minLength={3}
-                            debounceTimeout={500}
+                        <input 
                             onChange={onChange}
                             placeholder={'Search...'}
                             type='text'
@@ -128,10 +81,10 @@ export default function Header({ click, setClick, show, setShow, hide }){
                         <IoMdSearch onClick={() => onSearch(searchValue)} />                        
                     </SearchInner>
                     
-                    <Dropdown>{dataTest
+                    <Dropdown>{isLoading ? isLoading && <DropdowRow>Loading...</DropdowRow> : data[0] && data
                         .filter((item) => {
                             const searchTerm = searchValue.toLowerCase();
-                            const name = item.name.toLowerCase();
+                            const name = item.userName.toLowerCase();
                             
                             return (searchTerm && 
                                 name.includes(searchTerm) &&
@@ -139,9 +92,9 @@ export default function Header({ click, setClick, show, setShow, hide }){
                                 );
                         })
                         .slice(0,5)
-                        .map(item => (
-                            <DropdowRow onClick={()=>setSearchValue(item.name)} key={item.id}>
-                                {item.name}
+                        .map((item, index) => (
+                            <DropdowRow onClick={()=>onClick(item.userName)} key={index}>
+                                <img src={item.pictureUrl}/> <p>{item.userName}</p>
                             </DropdowRow>
                         ))}
                     </Dropdown>
@@ -155,8 +108,7 @@ export default function Header({ click, setClick, show, setShow, hide }){
                 <span onClick={userLogout}>Logout</span>
             </Menu>
         </>
-    );
-
+    )
 }
 
 const Container = styled.div `
@@ -227,6 +179,13 @@ const Dropdown = styled.div`
     border: 1px solid gray;
     position: absolute;
     z-index: 1;
+
+    img {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        margin-right: 10px;
+    }
 
     &:empty {
         width: 0px;
