@@ -26,13 +26,12 @@ export default function Header({ click, setClick, show, setShow, hide }){
     function userLogout(){
         localStorage.removeItem("user"); 
         navigate("/");
-
     }
 
     return (
         <>
             <Container onClick={hide}>
-                <span>linkr</span>
+                <span onClick={() => navigate("/timeline")}>linkr</span>
                 <User>
                     <Arrow onClick={toggleShow} isClicked={click}/>
                     <img src={imgUrl} alt="user" onClick={toggleShow} />
@@ -64,6 +63,7 @@ const Container = styled.div `
         font-weight: 700;
         font-size: 50px;
         margin-left: 20px;
+        cursor: pointer;
     }
 
     @media (max-width: 1080px){

@@ -138,7 +138,7 @@ const PostsHashtag = styled.div `
         width: 100%;
         height: calc(100vh - 339px);
         left: 0%;
-        top: 340px;
+        top: 180px;
 
         > p {
             font-size: 18px;
