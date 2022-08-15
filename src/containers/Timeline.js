@@ -4,9 +4,11 @@ import { Oval } from "react-loader-spinner";
 import ReactModal from 'react-modal';
 import UserContext from "../contexts/UserContext";
 import Header from "../components/Header";
+import Publish from "../components/publish";
 import Post from "../components/Post";  
 import axios from "axios";
 import HashtagBox from "../components/HashtagBox";
+
 
 export default function Timeline(){
     const [click, setClick] = useState(false);

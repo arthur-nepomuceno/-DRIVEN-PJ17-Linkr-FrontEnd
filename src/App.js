@@ -6,6 +6,7 @@ import UserContext from "./contexts/UserContext";
 import SignUp from "./containers/SignUp";
 import Login from "./containers/Login";
 import Timeline from "./containers/Timeline"; 
+import Publish from "./components/publish";
 
 export default function App() {
 
