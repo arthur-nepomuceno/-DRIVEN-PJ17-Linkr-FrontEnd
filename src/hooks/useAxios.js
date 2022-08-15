@@ -83,7 +83,7 @@ export default useAxios;
  *          method: Qual método você vai utilizar (get, post, ...),
  *          route: Qual a rota ('/', '/users', ...),
  *          headers: Caso tenha hearder passe as informações aqui,
- *      }, false);
+ *      }, false;)
  * 
  *  DATA vai retornar o 'promisse.data', ou seja, na maioria das vezes o que se espera quando faz uma req a uma API,
  *  isLoading é um booleano que diz se o hook está carregando as informações ou não, pode ser usado para renderizar uma tela de loading,

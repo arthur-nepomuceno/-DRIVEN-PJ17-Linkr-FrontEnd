@@ -11,7 +11,8 @@ export default function SignUp(){
     const [pictureUrl, setPictureUrl] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const API = process.env.REACT_APP_AXIOS_URL + '/signup';
+    //const API = 'http://localhost:5000/signup';
+    const API = 'https://driven-pj17-linkr.herokuapp.com/signup'
     const navigate = useNavigate();
 
     async function Send(event){
@@ -50,7 +51,7 @@ export default function SignUp(){
             </div>
             <div id="content">
                 <form onSubmit={Send}>
-                    <input type="email" placeholder="e-mail" value={email} onChange={e => {setEmail(e.target.value)}} required/>
+                    <input type="email" placeholder="e-mail" autoFocus="true" value={email} onChange={e => {setEmail(e.target.value)}} required/>
                     <input type="password" placeholder="password" value={password} onChange={e => {setPassword(e.target.value)}} required/>
                     <input type="text" placeholder="username" value={userName} onChange={e => {setUserName(e.target.value)}} required/>
                     <input type="url" placeholder="picture url" value={pictureUrl} onChange={e => {setPictureUrl(e.target.value)}} required/>

@@ -1,16 +1,113 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { ReactTagify } from "react-tagify";
 import { ImPencil2 } from "react-icons/im";
 import { FaTrash } from "react-icons/fa";
 import { HiOutlineHeart } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import { useState, useContext } from "react";
+import { decodeToken } from "react-jwt";
+import UserContext from "../contexts/UserContext";
+import axios from "axios";
+import { AiFillHeart } from "react-icons/ai";
 
-export default function Post({userImage, userName, postDescription, urlTitle, urlDescription, postUrl, urlImage, likesCount, likedBy}){
+export default function Post({setModal, postId, userId, userImage, userName, postDescription, urlTitle, urlDescription, postUrl, urlImage, likesCount, likedBy, setThisPost}){
+    
+    const [edit, setEdit] = useState(false);
+    const [newPost, setNewPost] = useState(postDescription);
+    const [update, setUpdate] = useState(false);
+    const [disable, setDisable] = useState(false);
+    const [deletePostId, setdeletePostId] = useState(null);
+    const { token } = useContext(UserContext);
+    const decode = decodeToken(token.token);
+    const isPostOwner = decode.id === userId;
+    const API = `http://localhost:5000/update`;
+    const likeAPI = `http://localhost:5000/like`;
+    const unlikeAPI = `http://localhost:5000/unlike/${deletePostId}`;
+    const[like, setLike] = useState(false)
+    const navigate = useNavigate();
+
+    function redirectHashtagPage(hashtag){
+
+        navigate('/hashtag/' + hashtag, {state: { hashtag }});
+        
+    }
+
+    function editPost(){
+        if(edit === false){
+            setEdit(true);
+        } else {
+            setEdit(false);
+            setNewPost(postDescription);
+        }
+    }
+
+    async function deletePost(){
+        setModal(true);
+        setThisPost(postId);
+    }
+
+    async function pressKey(event){
+        if(event.key === 'Escape'){
+            setEdit(false);
+
+            if(update === false){
+                setNewPost(postDescription);
+            } else {
+                setNewPost(newPost);
+            }
+        }
+
+        if(event.key === 'Enter'){
+            setDisable(true);
+            const config = {headers: {Authorization: `Bearer ${token.token}`}};
+            const body = {content: newPost, id: postId};
+            try {
+                await axios.put(API, body, config);
+                setDisable(false);
+                setEdit(false);
+                setUpdate(true);
+                return;
+            } catch(error) {
+                alert(`Sorry, it wasn't possible to save your editing.`)
+                setEdit(true);
+                return console.log(error.response.data);
+            }
+        }
+    };
+        async function likePost(){
+        setdeletePostId(postId)
+        const body = {postId};
+        if(like === false){
+        setLike(true);
+        try {
+        const config = {headers: {Authorization: `Bearer ${token.token}`}}
+        await axios.post(likeAPI, body, config);
+        return;
+        } catch(error) {
+        return alert(`It wasn't possible to like the post.`)
+        }
+        }if(like === true) {
+        setLike(false);
+       
+        setdeletePostId(postId)
+        
+        try {
+            const config = {headers: {Authorization: `Bearer ${token.token}`}}
+            await axios.delete(unlikeAPI, config);
+            return;
+            } catch(error) {
+            return alert(`It wasn't possible to like the post.`)
+            }
+        }
+        }
     return (
         <Container>
             <div id="user">
                 <img src={userImage} alt="foto do usuário"/>
                 <div id="like">
-                    <HiOutlineHeart size={20} cursor="pointer"/>
+                <div onClick={likePost}>
+                     {like ? (< AiFillHeart size={20} cursor="pointer" color="red"/> ): (< HiOutlineHeart size={20} cursor="pointer"/>)}
+                </div>
                     {likesCount === '0' ? '' 
                                         : likesCount === '1' ? <h5>{likesCount} like</h5>
                                                              : <h5>{likesCount} likes</h5>}
@@ -18,13 +115,21 @@ export default function Post({userImage, userName, postDescription, urlTitle, ur
             </div>
             <div id="head">
                 <h1>{userName}</h1>
-                <div id="edit">
+                <div id="edit" onClick={editPost} hidden={!isPostOwner}>
                     <ImPencil2 cursor="pointer"/>
                 </div>
-                <div id="delete">
+                <div id="delete" onClick={deletePost} hidden={!isPostOwner}>
                     <FaTrash cursor="pointer"/>
                 </div>
-                <h2>{postDescription}</h2>
+                <ReactTagify 
+                    tagStyle={{cursor: "pointer", fontWeight: "bold", color: "#ffffff"}}
+                    tagClicked={(tag) => redirectHashtagPage(tag.replace("#",""))}
+                >
+                    <h2>{postDescription}</h2>
+                </ReactTagify>
+                
+                <h2>{!edit? newPost 
+                          : <textarea type="text" onKeyDown={pressKey} disabled={disable} autoFocus={edit} maxLength="120" value={newPost} onChange={e => setNewPost(e.target.value)} on/>}</h2>
             </div>
             <a href={postUrl} target="_blank">
                 <div id="url">
@@ -75,8 +180,6 @@ const Container = styled.div`
         align-items: center;      
     }
 
-    
-
     div#like h5 {
         font-size: 11px;
         line-height: 13px;
@@ -99,6 +202,8 @@ const Container = styled.div`
     }
 
     div#head h2 {
+        width: 100%;
+        max-height: 52px;
         font-family: 'Lato';
         font-style: normal;
         font-weight: 400;
@@ -107,6 +212,20 @@ const Container = styled.div`
         color: #B7B7B7;
         position: absolute;
         top: 37%;
+    }
+
+    div#head textarea {
+        width: 100%;
+        height: 44px;
+        outline: none;
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 17px;
+        color: #4C4C4C;
+        border-radius: 7px;
+        padding-left: 10px;
     }
 
     div#edit {

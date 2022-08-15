@@ -11,7 +11,8 @@ export default function Login(){
     const [loading, setLoading] = useState(false);
     const {setToken} = useContext(UserContext);
 
-    const API = 'http://localhost:5000/signin';
+    //const API = 'http://localhost:5000/signin';
+    const API = 'https://driven-pj17-linkr.herokuapp.com/signin';
     const navigate = useNavigate();
 
     async function Send(event){
@@ -49,7 +50,7 @@ export default function Login(){
             </div>
             <div id="content">
                 <form onSubmit={Send}>
-                    <input type="email" placeholder="e-mail" value={email} onChange={e => {setEmail(e.target.value)}} required/>
+                    <input type="email" placeholder="e-mail" autoFocus="true" value={email} onChange={e => {setEmail(e.target.value)}} required/>
                     <input type="password" placeholder="password" value={password} onChange={e => {setPassword(e.target.value)}} required/>
                     <button type="submit" disabled={loading}>Log in</button>
                 </form>
