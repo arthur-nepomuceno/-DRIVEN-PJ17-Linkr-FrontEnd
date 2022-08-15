@@ -2,12 +2,21 @@ import styled from "styled-components";
 import { ImPencil2 } from "react-icons/im";
 import { FaTrash } from "react-icons/fa";
 import { HiOutlineHeart } from "react-icons/hi";
-import { useState, useEffect } from "react";
+import { useState, useContext } from "react";
+import { decodeToken } from "react-jwt";
+import UserContext from "../contexts/UserContext";
+import axios from "axios";
 
-export default function Post({userImage, userName, postDescription, urlTitle, urlDescription, postUrl, urlImage, likesCount, likedBy}){
+export default function Post({setModal, postId, userId, userImage, userName, postDescription, urlTitle, urlDescription, postUrl, urlImage, likesCount, likedBy, setThisPost}){
     
     const [edit, setEdit] = useState(false);
     const [newPost, setNewPost] = useState(postDescription);
+    const [update, setUpdate] = useState(false);
+    const [disable, setDisable] = useState(false);
+    const { token } = useContext(UserContext);
+    const decode = decodeToken(token.token);
+    const isPostOwner = decode.id === userId;
+    const API = `http://localhost:5000/update`;
 
     function editPost(){
         if(edit === false){
@@ -18,18 +27,40 @@ export default function Post({userImage, userName, postDescription, urlTitle, ur
         }
     }
 
-    function pressKey(event){
-        if(event.key === 'Escape' && edit === true){
+    async function deletePost(){
+        setModal(true);
+        setThisPost(postId);
+    }
+
+    async function pressKey(event){
+        if(event.key === 'Escape'){
             setEdit(false);
-            setNewPost(postDescription);
+
+            if(update === false){
+                setNewPost(postDescription);
+            } else {
+                setNewPost(newPost);
+            }
+        }
+
+        if(event.key === 'Enter'){
+            setDisable(true);
+            const config = {headers: {Authorization: `Bearer ${token.token}`}};
+            const body = {content: newPost, id: postId};
+            try {
+                await axios.put(API, body, config);
+                setDisable(false);
+                setEdit(false);
+                setUpdate(true);
+                return;
+            } catch(error) {
+                alert(`Sorry, it wasn't possible to save your editing.`)
+                setEdit(true);
+                return console.log(error.response.data);
+            }
         }
     };
 
-    useEffect(() => {
-        document.addEventListener('keydown', pressKey, true)
-    }, [])
-
-    
     return (
         <Container>
             <div id="user">
@@ -43,14 +74,14 @@ export default function Post({userImage, userName, postDescription, urlTitle, ur
             </div>
             <div id="head">
                 <h1>{userName}</h1>
-                <div id="edit" onClick={editPost}>
+                <div id="edit" onClick={editPost} hidden={!isPostOwner}>
                     <ImPencil2 cursor="pointer"/>
                 </div>
-                <div id="delete">
+                <div id="delete" onClick={deletePost} hidden={!isPostOwner}>
                     <FaTrash cursor="pointer"/>
                 </div>
-                <h2>{!edit? postDescription 
-                          : <textarea type="text" autoFocus={edit} maxLength="120" value={newPost} onChange={e => setNewPost(e.target.value)}/>}</h2>
+                <h2>{!edit? newPost 
+                          : <textarea type="text" onKeyDown={pressKey} disabled={disable} autoFocus={edit} maxLength="120" value={newPost} onChange={e => setNewPost(e.target.value)} on/>}</h2>
             </div>
             <a href={postUrl} target="_blank">
                 <div id="url">
