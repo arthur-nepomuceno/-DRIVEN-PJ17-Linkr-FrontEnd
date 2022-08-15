@@ -14,8 +14,7 @@ export default function HashtagBox(){
 
     function redirectHashtagPage(hashtag){
 
-        const address = hashtag.slice(1,hashtag.length);
-        navigate('/hashtag/' + address);
+        navigate('/hashtag/' + hashtag, {state: { hashtag }});
         
     }
 
@@ -44,7 +43,7 @@ export default function HashtagBox(){
 function Hashtags({ hashtag, callback }){
 
     return (
-        <Hashtag onClick={() => callback(hashtag)}>{ hashtag }</Hashtag>
+        <Hashtag onClick={() => callback(hashtag)}># { hashtag }</Hashtag>
     );
 
 }

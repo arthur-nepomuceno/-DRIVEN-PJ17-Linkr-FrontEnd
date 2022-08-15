@@ -65,6 +65,11 @@ const Container = styled.div `
         font-size: 50px;
         margin-left: 20px;
     }
+
+    @media (max-width: 1080px){
+        width: 375px;
+        position: absolute;
+    }
 `
 
 const User = styled.div `
@@ -107,5 +112,9 @@ const Menu = styled.div `
         font-weight: 700;
         font-size: 15px;
         cursor: pointer;
+    }
+
+    @media (max-width: 1080px){
+        position: absolute;
     }
 `

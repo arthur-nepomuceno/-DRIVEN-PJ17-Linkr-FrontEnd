@@ -1,10 +1,20 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { ReactTagify } from "react-tagify";
 import { ImPencil2 } from "react-icons/im";
 import { FaTrash } from "react-icons/fa";
 import { HiOutlineHeart } from "react-icons/hi";
-import { Link } from "react-router-dom";
 
 export default function Post({userImage, userName, postDescription, urlTitle, urlDescription, postUrl, urlImage, likesCount, likedBy}){
+    
+    const navigate = useNavigate();
+
+    function redirectHashtagPage(hashtag){
+
+        navigate('/hashtag/' + hashtag, {state: { hashtag }});
+        
+    }
+
     return (
         <Container>
             <div id="user">
@@ -24,7 +34,12 @@ export default function Post({userImage, userName, postDescription, urlTitle, ur
                 <div id="delete">
                     <FaTrash cursor="pointer"/>
                 </div>
-                <h2>{postDescription}</h2>
+                <ReactTagify 
+                    tagStyle={{cursor: "pointer", fontWeight: "bold", color: "#ffffff"}}
+                    tagClicked={(tag) => redirectHashtagPage(tag.replace("#",""))}
+                >
+                    <h2>{postDescription}</h2>
+                </ReactTagify>
             </div>
             <a href={postUrl} target="_blank">
                 <div id="url">
@@ -74,8 +89,6 @@ const Container = styled.div`
         flex-direction: column;
         align-items: center;      
     }
-
-    
 
     div#like h5 {
         font-size: 11px;
