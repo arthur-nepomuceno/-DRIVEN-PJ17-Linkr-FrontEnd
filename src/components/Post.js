@@ -14,12 +14,13 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
     const [newPost, setNewPost] = useState(postDescription);
     const [update, setUpdate] = useState(false);
     const [disable, setDisable] = useState(false);
+    const [deletePostId, setdeletePostId] = useState(null);
     const { token } = useContext(UserContext);
     const decode = decodeToken(token.token);
     const isPostOwner = decode.id === userId;
     const API = `http://localhost:5000/update`;
     const likeAPI = `http://localhost:5000/like`;
-    const unlikeAPI = `http://localhost:5000/unlike`;
+    const unlikeAPI = `http://localhost:5000/unlike/${deletePostId}`;
     const[like, setLike] = useState(false)
 
     function editPost(){
@@ -65,6 +66,7 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
         }
     };
         async function likePost(){
+        setdeletePostId(postId)
         const body = {postId};
         if(like === false){
         setLike(true);
@@ -77,10 +79,12 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
         }
         }if(like === true) {
         setLike(false);
+       
+        setdeletePostId(postId)
+        
         try {
             const config = {headers: {Authorization: `Bearer ${token.token}`}}
-            console.log(config)
-            await axios.delete(unlikeAPI, body, config);
+            await axios.delete(unlikeAPI, config);
             return;
             } catch(error) {
             return alert(`It wasn't possible to like the post.`)
