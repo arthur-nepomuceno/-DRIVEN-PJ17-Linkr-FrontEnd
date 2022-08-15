@@ -6,6 +6,7 @@ import UserContext from "./contexts/UserContext";
 import SignUp from "./containers/SignUp";
 import Login from "./containers/Login";
 import Timeline from "./containers/Timeline"; 
+import HashtagPage from "./containers/HashtagPage";
 import Publish from "./components/publish";
 
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
             <Route path='/' element={<Login/>}/>
             <Route path='/signup' element={<SignUp/>}/>
             <Route path='/timeline' element={<Timeline/>}/>
+            <Route path='/hashtag/:hashtag' element={<HashtagPage />} />
           </Routes>
         </UserContext.Provider>
       </BrowserRouter>

@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { ReactTagify } from "react-tagify";
 import { ImPencil2 } from "react-icons/im";
 import { FaTrash } from "react-icons/fa";
 import { HiOutlineHeart } from "react-icons/hi";
@@ -17,6 +19,13 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
     const decode = decodeToken(token.token);
     const isPostOwner = decode.id === userId;
     const API = `http://localhost:5000/update`;
+    const navigate = useNavigate();
+
+    function redirectHashtagPage(hashtag){
+
+        navigate('/hashtag/' + hashtag, {state: { hashtag }});
+        
+    }
 
     function editPost(){
         if(edit === false){
@@ -80,6 +89,13 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
                 <div id="delete" onClick={deletePost} hidden={!isPostOwner}>
                     <FaTrash cursor="pointer"/>
                 </div>
+                <ReactTagify 
+                    tagStyle={{cursor: "pointer", fontWeight: "bold", color: "#ffffff"}}
+                    tagClicked={(tag) => redirectHashtagPage(tag.replace("#",""))}
+                >
+                    <h2>{postDescription}</h2>
+                </ReactTagify>
+                
                 <h2>{!edit? newPost 
                           : <textarea type="text" onKeyDown={pressKey} disabled={disable} autoFocus={edit} maxLength="120" value={newPost} onChange={e => setNewPost(e.target.value)} on/>}</h2>
             </div>
