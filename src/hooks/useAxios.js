@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from 'axios';
 
-
 //function that creates a querystring if requested
 function queryStringBuilder(query = {}) {
     //query must be an object

@@ -11,7 +11,8 @@ import Publish from "./components/publish";
 export default function App() {
 
   const [token, setToken] = useState('');
-  const context = {token, setToken}
+  const [posts, setPosts] = useState(null);
+  const context = {token, setToken, posts, setPosts};
 
   return (
     <div className="App">

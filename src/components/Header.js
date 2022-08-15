@@ -7,7 +7,7 @@ import UserContext from "../contexts/UserContext";
 
 export default function Header({ click, setClick, show, setShow, hide }){
 
-    const {token} = useContext(UserContext);
+    const { token } = useContext(UserContext);
     const decode = decodeToken(token.token);
     const imgUrl = decode.pictureUrl;
     const navigate = useNavigate();
@@ -24,7 +24,7 @@ export default function Header({ click, setClick, show, setShow, hide }){
     }
 
     function userLogout(){
-        localStorage.removeItem("user"); //verificar como está armazenado no local storage
+        localStorage.removeItem("user"); 
         navigate("/");
 
     }
@@ -56,14 +56,15 @@ const Container = styled.div `
     position: fixed;
     top: 0px;
     left: 0px;
+    z-index: 1;
 
     span {
         color: white;
+        font-family: 'Passion One';
         font-weight: 700;
         font-size: 50px;
         margin-left: 20px;
     }
-
 `
 
 const User = styled.div `

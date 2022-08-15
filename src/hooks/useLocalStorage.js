@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 function useLocalStorage(key, initial) {
 
-    //setValue is a function return either the initial value or value stored in localstorage
+    //setValue is a function that returns either the initial value or the value stored in localstorage
     const [value, setValue] = useState(() => {
 
         const storedValue = localStorage.getItem(key);

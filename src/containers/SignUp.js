@@ -26,8 +26,12 @@ export default function SignUp(){
         } catch(error){
             setLoading(false);
             if(error.response.status === 401){
-                return alert ('Email or username unavailable.')
-            } else {
+                return alert ('Email or username unavailable.');
+            }
+            if(error.response.status === 422){
+                return alert ('Your password must be at least 11 digits');
+            }
+            else {
                 return console.log(error.response.data);
             }
         }
@@ -45,7 +49,7 @@ export default function SignUp(){
             </div>
             <div id="content">
                 <form onSubmit={Send}>
-                    <input type="email" placeholder="e-mail" value={email} onChange={e => {setEmail(e.target.value)}} required/>
+                    <input type="email" placeholder="e-mail" autoFocus="true" value={email} onChange={e => {setEmail(e.target.value)}} required/>
                     <input type="password" placeholder="password" value={password} onChange={e => {setPassword(e.target.value)}} required/>
                     <input type="text" placeholder="username" value={userName} onChange={e => {setUserName(e.target.value)}} required/>
                     <input type="url" placeholder="picture url" value={pictureUrl} onChange={e => {setPictureUrl(e.target.value)}} required/>
@@ -170,6 +174,7 @@ const Container = styled.div`
         position: absolute;
         top: 65%;
         left: 33%;
+        margin-top: 10px;
     }
 
     p:hover{
