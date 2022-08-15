@@ -39,13 +39,15 @@ export default function Timeline(){
             
         }
     }
-    useEffect(() => {getPosts()}, [modal])
+    useEffect(() => {getPosts()}, [])
 
     async function confirmDeletePost(){
         try {
             setAwaitServer(true);
             const config = {headers: {Authorization: `Bearer ${token.token}`}}
             await axios.delete(deleteAPI, config);
+            const response = await axios.get(timelineAPI, config);
+            setPosts(response.data);
             setAwaitServer(false)
             setModal(false);
             return;
