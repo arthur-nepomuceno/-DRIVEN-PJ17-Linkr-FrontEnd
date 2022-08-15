@@ -15,9 +15,8 @@ export default function Header({ click, setClick, show, setShow, hide }){
     const navigate = useNavigate();
 
     const [searchValue, setSearchValue] = useState('');
-    const [query, setQuery] = useState('');
 
-    const [{ data, isLoading }, executeSearch] = useAxios({method:'GET', route: `/users${query}`}, true);
+    const [{ data, isLoading }, executeSearch] = useAxios({method:'GET', route: `/users?search=${searchValue}`}, true);
 
     function debounce (func, timeout = 300) {
         let timer;
@@ -34,14 +33,11 @@ export default function Header({ click, setClick, show, setShow, hide }){
         if(event.target.value.length < 3) {
             return;
         }
-        setQuery(`?search=${event.target.value}`);
-
         debounce(onSearch());
     }
 
     const onClick = (user) => {
         setSearchValue(user);
-        setQuery(`?search=${user}`);
         debounce(onSearch());
     }
 
