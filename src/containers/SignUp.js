@@ -17,7 +17,6 @@ export default function SignUp(){
 
     async function Send(event){
         event.preventDefault();
-        console.log(API+' '+process.env.REACT_APP_TEST_SOME_KEY)
         const body = {email, password, userName, pictureUrl};
         setLoading(true);
         try{
