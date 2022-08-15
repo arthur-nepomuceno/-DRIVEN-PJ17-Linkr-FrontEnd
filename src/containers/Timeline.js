@@ -4,9 +4,11 @@ import { Oval } from "react-loader-spinner";
 import ReactModal from 'react-modal';
 import UserContext from "../contexts/UserContext";
 import Header from "../components/Header";
+import Publish from "../components/publish";
 import Post from "../components/Post";  
 import axios from "axios";
 import HashtagBox from "../components/HashtagBox";
+
 
 export default function Timeline(){
     const [click, setClick] = useState(false);
@@ -142,24 +144,6 @@ const Title = styled.div `
         top: 90px;
     }
 
-`
-const Publish = styled.div`
-    width: 42%;
-    height: 20%;
-    background: #FFFFFF;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 16px;
-    position: absolute;
-    top: 23%;
-    left: 17%;
-
-    @media (max-width: 1080px){
-        width: 100%;
-        height: 164px;
-        left: 0%;
-        top: 160px;
-        border-radius: 0px;
-    }
 `
 const TimelinePage = styled.div `
     width: 42%;
