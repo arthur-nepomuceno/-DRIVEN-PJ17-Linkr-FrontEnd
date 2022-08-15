@@ -16,8 +16,10 @@ export default function Timeline(){
     const [thisPost, setThisPost] = useState(null);
     const [awaitServer, setAwaitServer] = useState(false);
     const {token, posts, setPosts} = useContext(UserContext);
-    const timelineAPI = 'http://localhost:5000/timeline';
-    const deleteAPI = `http://localhost:5000/delete/${thisPost}`;
+    //const timelineAPI = 'http://localhost:5000/timeline';
+    //const deleteAPI = `http://localhost:5000/delete/${thisPost}`;
+    const timelineAPI = 'https://driven-pj17-linkr.herokuapp.com/timeline';
+    const deleteAPI = `https://driven-pj17-linkr.herokuapp.com/delete/${thisPost}`;
 
     function hide(){
         if(show === true) {
@@ -39,13 +41,15 @@ export default function Timeline(){
             
         }
     }
-    useEffect(() => {getPosts()}, [modal])
+    useEffect(() => {getPosts()}, [])
 
     async function confirmDeletePost(){
         try {
             setAwaitServer(true);
             const config = {headers: {Authorization: `Bearer ${token.token}`}}
             await axios.delete(deleteAPI, config);
+            const response = await axios.get(timelineAPI, config);
+            setPosts(response.data);
             setAwaitServer(false)
             setModal(false);
             return;

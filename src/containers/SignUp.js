@@ -11,7 +11,8 @@ export default function SignUp(){
     const [pictureUrl, setPictureUrl] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const API = 'http://localhost:5000/signup';
+    //const API = 'http://localhost:5000/signup';
+    const API = 'https://driven-pj17-linkr.herokuapp.com/signup'
     const navigate = useNavigate();
 
     async function Send(event){
