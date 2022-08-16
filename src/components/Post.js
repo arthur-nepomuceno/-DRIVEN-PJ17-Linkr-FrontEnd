@@ -126,10 +126,9 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
                     tagClicked={(tag) => redirectHashtagPage(tag.replace("#",""))}
                 >
                     <h2>{postDescription}</h2>
-                </ReactTagify>
-                
                 <h2>{!edit? newPost 
                           : <textarea type="text" onKeyDown={pressKey} disabled={disable} autoFocus={edit} maxLength="120" value={newPost} onChange={e => setNewPost(e.target.value)} on/>}</h2>
+                </ReactTagify>
             </div>
             <a href={postUrl} target="_blank">
                 <div id="url">

@@ -9,7 +9,6 @@ import Post from "../components/Post";
 import axios from "axios";
 import HashtagBox from "../components/HashtagBox";
 
-
 export default function Timeline(){
     const [click, setClick] = useState(false);
     const [show, setShow] = useState(false);
