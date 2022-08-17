@@ -168,7 +168,7 @@ const Container = styled.div`
     margin-bottom: 16px;
 
     div#user {
-        width: 50px;
+        width: 55px;
         height: 100%;
         position: absolute;
         top: 7%;
@@ -189,18 +189,28 @@ const Container = styled.div`
         color: #FFFFFF;
         margin-bottom: 20px;
         margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; 
     }
     div#comment{
         color: #FFFFFF;
         margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; 
+        
     }
     div#repost {
         color: #FFFFFF;
         margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; 
     }
 
-    div#like h5, div#comment h5 {
-        font-size: 11px;
+    div#like h5, div#comment h5, div#repost h5 {
+        font-size: 10px;
         line-height: 13px;
         text-align: center;
         margin-top: 3px;
