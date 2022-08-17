@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { ReactTagify } from "react-tagify";
+//import { ReactTagify } from "react-tagify";
 import { ImPencil2 } from "react-icons/im";
 import { FaTrash } from "react-icons/fa";
 import { HiOutlineHeart } from "react-icons/hi";
@@ -121,12 +121,12 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
                 <div id="delete" onClick={deletePost} hidden={!isPostOwner}>
                     <FaTrash cursor="pointer"/>
                 </div>
-                <ReactTagify 
+                {/* <ReactTagify 
                     tagStyle={{cursor: "pointer", fontWeight: "bold", color: "#ffffff"}}
                     tagClicked={(tag) => redirectHashtagPage(tag.replace("#",""))}
                 >
                     <h2>{postDescription}</h2>
-                </ReactTagify>
+                </ReactTagify> */}
                 
                 <h2>{!edit? newPost 
                           : <textarea type="text" onKeyDown={pressKey} disabled={disable} autoFocus={edit} maxLength="120" value={newPost} onChange={e => setNewPost(e.target.value)} on/>}</h2>
