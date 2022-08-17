@@ -104,6 +104,7 @@ export default function Timeline(){
                                                                                         postUrl={post.postUrl}
                                                                                         urlImage={post.urlImage}
                                                                                         likesCount={post.likesCount}
+                                                                                        commentsCount={post.commentsCount}
                                                                                         likedBy={post.likedBy}
                                                                                         setThisPost={setThisPost}/>)}
             </TimelinePage>

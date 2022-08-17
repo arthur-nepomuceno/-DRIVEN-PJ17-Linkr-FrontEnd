@@ -8,9 +8,11 @@ import { useState, useContext } from "react";
 import { decodeToken } from "react-jwt";
 import UserContext from "../contexts/UserContext";
 import axios from "axios";
-import { AiFillHeart } from "react-icons/ai";
+import { AiFillHeart, AiOutlineComment } from "react-icons/ai";
+import { BiRepost } from "react-icons/bi";
+import { icons } from "react-icons";
 
-export default function Post({setModal, postId, userId, userImage, userName, postDescription, urlTitle, urlDescription, postUrl, urlImage, likesCount, likedBy, setThisPost}){
+export default function Post({setModal, postId, userId, userImage, userName, postDescription, urlTitle, urlDescription, postUrl, urlImage, likesCount, likedBy, setThisPost, commentsCount}){
     
     const [edit, setEdit] = useState(false);
     const [newPost, setNewPost] = useState(postDescription);
@@ -104,6 +106,7 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
         <Container>
             <div id="user">
                 <img src={userImage} alt="foto do usuário"/>
+                <div id="icons" >
                 <div id="like">
                 <div onClick={likePost}>
                      {like ? (< AiFillHeart size={20} cursor="pointer" color="red"/> ): (< HiOutlineHeart size={20} cursor="pointer"/>)}
@@ -112,6 +115,24 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
                                         : likesCount === '1' ? <h5>{likesCount} like</h5>
                                                              : <h5>{likesCount} likes</h5>}
                 </div>
+                <div id="comment">
+                <div onClick={likePost}>
+                     < AiOutlineComment size={20} cursor="pointer" color="white"/> 
+                </div>
+                    {commentsCount === '0' ? '' 
+                                        : commentsCount === '1' ? <h5>{commentsCount} comment</h5>
+                                                             : <h5>{commentsCount} comments</h5>}
+                </div>
+                <div id="repost">
+                <div onClick={likePost}>
+                < BiRepost size={20} cursor="pointer" color="white"/> 
+                </div>
+                    {likesCount === '0' ? '' 
+                                        : likesCount === '1' ? <h5>{likesCount} like</h5>
+                                                             : <h5>{likesCount} likes</h5>}
+                </div>
+                </div>
+                
             </div>
             <div id="head">
                 <h1>{userName}</h1>
@@ -121,14 +142,7 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
                 <div id="delete" onClick={deletePost} hidden={!isPostOwner}>
                     <FaTrash cursor="pointer"/>
                 </div>
-                <ReactTagify 
-                    tagStyle={{cursor: "pointer", fontWeight: "bold", color: "#ffffff"}}
-                    tagClicked={(tag) => redirectHashtagPage(tag.replace("#",""))}
-                >
-                    <h2>{postDescription}</h2>
-                <h2>{!edit? newPost 
-                          : <textarea type="text" onKeyDown={pressKey} disabled={disable} autoFocus={edit} maxLength="120" value={newPost} onChange={e => setNewPost(e.target.value)} on/>}</h2>
-                </ReactTagify>
+                
             </div>
             <a href={postUrl} target="_blank">
                 <div id="url">
@@ -155,13 +169,14 @@ const Container = styled.div`
 
     div#user {
         width: 50px;
-        height: 39%;
+        height: 100%;
         position: absolute;
         top: 7%;
         left: 3%;
         display: flex;
         flex-direction: column;
-        align-items: center;     
+        align-items: center; 
+        
     }
 
     div#user img {
@@ -172,14 +187,19 @@ const Container = styled.div`
 
     div#like {
         color: #FFFFFF;
-        position: absolute;
-        top: 65%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;      
+        margin-bottom: 20px;
+        margin-top: 20px;
+    }
+    div#comment{
+        color: #FFFFFF;
+        margin-bottom: 20px;
+    }
+    div#repost {
+        color: #FFFFFF;
+        margin-bottom: 20px;
     }
 
-    div#like h5 {
+    div#like h5, div#comment h5 {
         font-size: 11px;
         line-height: 13px;
         text-align: center;
