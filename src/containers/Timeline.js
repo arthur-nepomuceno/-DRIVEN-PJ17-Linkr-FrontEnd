@@ -9,7 +9,6 @@ import Post from "../components/Post";
 import axios from "axios";
 import HashtagBox from "../components/HashtagBox";
 
-
 export default function Timeline(){
     const [click, setClick] = useState(false);
     const [show, setShow] = useState(false);
@@ -18,11 +17,11 @@ export default function Timeline(){
     const [thisPost, setThisPost] = useState(null);
     const [awaitServer, setAwaitServer] = useState(false);
     const {token, posts, setPosts} = useContext(UserContext);
-    //const timelineAPI = 'http://localhost:5000/timeline';
-    //const deleteAPI = `http://localhost:5000/delete/${thisPost}`;
-    const timelineAPI = 'https://driven-pj17-linkr.herokuapp.com/timeline';
+    const timelineAPI = 'http://localhost:5000/timeline';
+    const deleteAPI = `http://localhost:5000/delete/${thisPost}`;
+/*     const timelineAPI = 'https://driven-pj17-linkr.herokuapp.com/timeline';
     const deleteAPI = `https://driven-pj17-linkr.herokuapp.com/delete/${thisPost}`;
-
+ */
     function hide(){
         if(show === true) {
             setShow(false);

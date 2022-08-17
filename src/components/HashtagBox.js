@@ -1,16 +1,30 @@
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import styled from "styled-components";
-import useAxios from "../hooks/useAxios";
+import UserContext from "../contexts/UserContext";
 
 export default function HashtagBox(){
 
-    const API = "/hashtag";
+    const API = "http://localhost:5000/hashtag";
     const navigate = useNavigate();
+    const { token } = useContext(UserContext);
+    const [data, setData] = useState([]);
 
-    const [{ data }] = useAxios({
-                                    method: "get",
-                                    url: API,
-                                });
+    async function getTrending(){
+
+        try {
+            const config = {headers: {Authorization: `Bearer ${token.token}`}}
+            const response = await axios.get(API, config);
+            setData(response.data);
+            return;
+        } catch(error) {
+            return console.log(error);
+            
+        }
+    }
+
+    useEffect(() => {getTrending()}, [])
 
     function redirectHashtagPage(hashtag){
 
