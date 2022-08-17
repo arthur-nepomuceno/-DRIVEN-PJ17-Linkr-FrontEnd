@@ -9,20 +9,20 @@ import Post from "../components/Post";
 import axios from "axios";
 import HashtagBox from "../components/HashtagBox";
 
-
 export default function Timeline(){
     const [click, setClick] = useState(false);
     const [show, setShow] = useState(false);
     const [error, setError] = useState(false);
     const [modal, setModal] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [thisPost, setThisPost] = useState(null);
     const [awaitServer, setAwaitServer] = useState(false);
     const {token, posts, setPosts} = useContext(UserContext);
     const timelineAPI = 'http://localhost:5000/timeline';
     const deleteAPI = `http://localhost:5000/delete/${thisPost}`;
-    //const timelineAPI = 'https://driven-pj17-linkr.herokuapp.com/timeline';
-    //const deleteAPI = `https://driven-pj17-linkr.herokuapp.com/delete/${thisPost}`;
-
+/*  const timelineAPI = 'https://driven-pj17-linkr.herokuapp.com/timeline';
+    const deleteAPI = `https://driven-pj17-linkr.herokuapp.com/delete/${thisPost}`;
+ */
     function hide(){
         if(show === true) {
             setShow(false);
@@ -32,10 +32,12 @@ export default function Timeline(){
 
 
     async function getPosts(){
+        console.log('rodei com o loading')
         try {
             const config = {headers: {Authorization: `Bearer ${token.token}`}}
             const response = await axios.get(timelineAPI, config);
             setPosts(response.data);
+            console.log(response.data);
             return;
         } catch(error) {
             setError(true);
@@ -43,7 +45,8 @@ export default function Timeline(){
             
         }
     }
-    useEffect(() => {getPosts()}, [])
+
+    useEffect(() => {getPosts()}, [loading])
 
     async function confirmDeletePost(){
         try {
@@ -72,7 +75,7 @@ export default function Timeline(){
                 hide={hide}
             />
             <Title>timeline</Title>
-            <Publish></Publish>
+            <Publish loading={loading} setLoading={setLoading}></Publish>
             <TimelinePage>
                 <Modal isOpen={modal}>
                     {!awaitServer ? <p>Are you sure you want to delete this post?</p>
@@ -88,7 +91,7 @@ export default function Timeline(){
                     </div>
                 </Modal>
                 {error ? <p>An error occured while trying to fetch the posts, please refresh the page.</p>
-                       : !posts ? <>
+                       : !posts || loading ? <>
                                      <Oval color="#FFFFFF" secondaryColor="#FFFFFF"/>
                                      <p>... loading ...</p>
                                   </>
@@ -181,7 +184,6 @@ const TimelinePage = styled.div `
 
         > p {
             font-size: 18px;
-            margin-top: 90px;
         }
     }
 
