@@ -10,32 +10,37 @@ import UserContext from "../contexts/UserContext";
 import axios from "axios";
 import { AiFillHeart, AiOutlineComment } from "react-icons/ai";
 import { BiRepost } from "react-icons/bi";
-import { icons } from "react-icons";
+import { TbSend } from "react-icons/tb";
 
-export default function Post({setModal, postId, userId, userImage, userName, postDescription, urlTitle, urlDescription, postUrl, urlImage, likesCount, likedBy, setThisPost, commentsCount}){
-    
+export default function Post({ setModal, postId, userId, userImage, userName, postDescription, urlTitle, urlDescription, postUrl, urlImage, likesCount, likedBy, setThisPost, commentsCount }) {
+
     const [edit, setEdit] = useState(false);
     const [newPost, setNewPost] = useState(postDescription);
     const [update, setUpdate] = useState(false);
     const [disable, setDisable] = useState(false);
-    const [deletePostId, setdeletePostId] = useState(null);
     const { token } = useContext(UserContext);
     const decode = decodeToken(token.token);
     const isPostOwner = decode.id === userId;
     const API = `http://localhost:5000/update`;
     const likeAPI = `http://localhost:5000/like`;
-    const unlikeAPI = `http://localhost:5000/unlike/${deletePostId}`;
-    const[like, setLike] = useState(false)
+    const unlikeAPI = `http://localhost:5000/unlike/${postId}`;
+    const postCommentsAPI = `http://localhost:5000/comments/${postId}`;
+    const [postComments, setpostComments] = useState([]);
+    const [comments, setComments] = useState("");
+    const [like, setLike] = useState(false);
+    const [show, setShow] = useState(false);
     const navigate = useNavigate();
+   
+   
+   
+    function redirectHashtagPage(hashtag) {
 
-    function redirectHashtagPage(hashtag){
+        navigate('/hashtag/' + hashtag, { state: { hashtag } });
 
-        navigate('/hashtag/' + hashtag, {state: { hashtag }});
-        
     }
 
-    function editPost(){
-        if(edit === false){
+    function editPost() {
+        if (edit === false) {
             setEdit(true);
         } else {
             setEdit(false);
@@ -43,115 +48,167 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
         }
     }
 
-    async function deletePost(){
+    async function deletePost() {
         setModal(true);
         setThisPost(postId);
     }
 
-    async function pressKey(event){
-        if(event.key === 'Escape'){
+    async function pressKey(event) {
+        if (event.key === 'Escape') {
             setEdit(false);
 
-            if(update === false){
+            if (update === false) {
                 setNewPost(postDescription);
             } else {
                 setNewPost(newPost);
             }
         }
 
-        if(event.key === 'Enter'){
+        if (event.key === 'Enter') {
             setDisable(true);
-            const config = {headers: {Authorization: `Bearer ${token.token}`}};
-            const body = {content: newPost, id: postId};
+            const config = { headers: { Authorization: `Bearer ${token.token}` } };
+            const body = { content: newPost, id: postId };
             try {
                 await axios.put(API, body, config);
                 setDisable(false);
                 setEdit(false);
                 setUpdate(true);
                 return;
-            } catch(error) {
+            } catch (error) {
                 alert(`Sorry, it wasn't possible to save your editing.`)
                 setEdit(true);
                 return console.log(error.response.data);
             }
         }
     };
-        async function likePost(){
-        setdeletePostId(postId)
-        const body = {postId};
-        if(like === false){
-        setLike(true);
-        try {
-        const config = {headers: {Authorization: `Bearer ${token.token}`}}
-        await axios.post(likeAPI, body, config);
-        return;
-        } catch(error) {
-        return alert(`It wasn't possible to like the post.`)
-        }
-        }if(like === true) {
-        setLike(false);
-       
-        setdeletePostId(postId)
+    async function likePost() {
         
-        try {
-            const config = {headers: {Authorization: `Bearer ${token.token}`}}
-            await axios.delete(unlikeAPI, config);
-            return;
-            } catch(error) {
-            return alert(`It wasn't possible to like the post.`)
+        const body = { postId };
+        
+        if (like === false) {
+            setLike(true);
+            
+            try {
+                const config = { headers: { Authorization: `Bearer ${token.token}` } }
+                await axios.post(likeAPI, body, config);
+                return;
+            } catch (error) {
+                return alert(`It wasn't possible to like the post.`)
+            }
+        } if (like === true) {
+            setLike(false);
+
+
+            try {
+                const config = { headers: { Authorization: `Bearer ${token.token}` } }
+                await axios.delete(unlikeAPI, config);
+                return;
+            } catch (error) {
+                return alert(`It wasn't possible to like the post.`)
             }
         }
+    }
+
+    async function commenttoggle() {
+        if (show === false) {
+            
+            setShow(true);
+            try {
+                const config = {headers: {Authorization: `Bearer ${token.token}`}}
+                const response = await axios.get(postCommentsAPI, config);
+                setpostComments(response.data);
+               console.log(postComments)
+              
+               return;
+            } catch (error) {
+                return alert(`It wasn't possible to like the post.`)
+            }
+        } else {
+            setShow(false);
         }
+    }
+
     return (
         <Container>
-            <div id="user">
-                <img src={userImage} alt="foto do usuário"/>
-                <div id="icons" >
-                <div id="like">
-                <div onClick={likePost}>
-                     {like ? (< AiFillHeart size={20} cursor="pointer" color="red"/> ): (< HiOutlineHeart size={20} cursor="pointer"/>)}
+            <div id="post">
+                <div id="user">
+                    <img src={userImage} alt="foto do usuário" />
+                    <div id="icons" >
+                        <div id="like">
+                            <div onClick={likePost}>
+                                {like ? (< AiFillHeart size={20} cursor="pointer" color="red" />) : (< HiOutlineHeart size={20} cursor="pointer" />)}
+                            </div>
+                            {likesCount === '0' ? ''
+                                : likesCount === '1' ? <h5>{likesCount} like</h5>
+                                    : <h5>{likesCount} likes</h5>}
+                        </div>
+                        <div id="comment">
+                            <div onClick={commenttoggle}>
+                                < AiOutlineComment size={20} cursor="pointer" color="white" />
+                            </div>
+                            {commentsCount === '0' ? ''
+                                : commentsCount === '1' ? <h5>{commentsCount} comment</h5>
+                                    : <h5>{commentsCount} comments</h5>}
+                        </div>
+                        <div id="repost">
+                            <div onClick={likePost}>
+                                < BiRepost size={20} cursor="pointer" color="white" />
+                            </div>
+                            {likesCount === '0' ? ''
+                                : likesCount === '1' ? <h5>{likesCount} like</h5>
+                                    : <h5>{likesCount} likes</h5>}
+                        </div>
+                    </div>
                 </div>
-                    {likesCount === '0' ? '' 
-                                        : likesCount === '1' ? <h5>{likesCount} like</h5>
-                                                             : <h5>{likesCount} likes</h5>}
+                <div id="head">
+                    <h1>{userName}</h1>
+                    <div id="edit" onClick={editPost} hidden={!isPostOwner}>
+                        <ImPencil2 cursor="pointer" />
+                    </div>
+                    <div id="delete" onClick={deletePost} hidden={!isPostOwner}>
+                        <FaTrash cursor="pointer" />
+                    </div>
+
                 </div>
-                <div id="comment">
-                <div onClick={likePost}>
-                     < AiOutlineComment size={20} cursor="pointer" color="white"/> 
+                <a href={postUrl} target="_blank">
+                    <div id="url">
+                        <h3>{urlTitle}</h3>
+                        <h4>{urlDescription}</h4>
+                        <h5>{postUrl}</h5>
+                        <img src={urlImage} alt="imagem da url" />
+                    </div>
+                </a>
+                <div>
+                    {show ? <div id="commentsArea">
+                    <div>   
+                        {postComments.length === 0 ?
+                      <p>'Não há registros e entradas'</p> 
+                    :
+                    postComments.map((extract) => {
+                        return(
+                            <div id="oneComment">
+                                <img src={extract.userImage} alt="imagem da url" />
+                                <span>
+                                    <h5>{extract.username}</h5>
+                                    <h4>{extract.comment}</h4>
+                                </span>
+  
+                          </div>
+                        );
+                    })
+                }
                 </div>
-                    {commentsCount === '0' ? '' 
-                                        : commentsCount === '1' ? <h5>{commentsCount} comment</h5>
-                                                             : <h5>{commentsCount} comments</h5>}
+                <div id="sendComment">
+                        <img src={userImage} alt="foto do usuário" />
+                        <div id="inputArea" >
+                        <input type="text" placeholder="write a comment" value={comments} onChange={e => {setComments(e.target.value)}} required/>
+                        < TbSend size={20} cursor="pointer" color="white" />
+                        </div>
+                        </div>       
+                </div> : null}
                 </div>
-                <div id="repost">
-                <div onClick={likePost}>
-                < BiRepost size={20} cursor="pointer" color="white"/> 
-                </div>
-                    {likesCount === '0' ? '' 
-                                        : likesCount === '1' ? <h5>{likesCount} like</h5>
-                                                             : <h5>{likesCount} likes</h5>}
-                </div>
-                </div>
-                
             </div>
-            <div id="head">
-                <h1>{userName}</h1>
-                <div id="edit" onClick={editPost} hidden={!isPostOwner}>
-                    <ImPencil2 cursor="pointer"/>
-                </div>
-                <div id="delete" onClick={deletePost} hidden={!isPostOwner}>
-                    <FaTrash cursor="pointer"/>
-                </div>
-                
-            </div>
-            <a href={postUrl} target="_blank">
-                <div id="url">
-                    <h3>{urlTitle}</h3>
-                    <h4>{urlDescription}</h4>
-                    <h5>{postUrl}</h5>
-                    <img src={urlImage} alt="imagem da url"/>
-                </div> 
-            </a>
+
         </Container>
     );
 }
@@ -184,7 +241,7 @@ const Container = styled.div`
         height: 50px;
         border-radius: 50%;
     }
-
+   
     div#like {
         color: #FFFFFF;
         margin-bottom: 20px;
@@ -193,14 +250,7 @@ const Container = styled.div`
         flex-direction: column;
         align-items: center; 
     }
-    div#comment{
-        color: #FFFFFF;
-        margin-bottom: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center; 
-        
-    }
+    
     div#repost {
         color: #FFFFFF;
         margin-bottom: 20px;
@@ -418,5 +468,80 @@ const Container = styled.div`
             right: -1%;
             bottom: -1%;
         }
+    }
+    div#comment{
+        color: #FFFFFF;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; 
+        
+    }
+    div#commentsArea img, div#oneComment img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+    
+    div#commentsArea{
+        background-color:red;
+        height: 50px;
+        position:absolute;
+        width:100%;
+        top:100%;
+        bottom:0;
+    }
+
+
+    div#oneComment{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 5x 10px 30px 30px;
+        border-radius: 5px;
+        padding-left: 15px;
+    }
+    div#oneComment span{
+        width:90%;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    div#oneComment h5{
+        ont-family: 'Lato';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 17px;
+        color: #F3F3F3;
+    }
+    div#oneComment h4{
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 17px;
+        color: #ACACAC;
+    }
+
+    div#sendComment{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    div#inputArea{
+        width: 90%;
+        background: #252525;
+        padding: 15px;
+        
+    }
+
+    div#inputArea input{
+        padding: 5px;
+        width:90%;
+        background: #252525;
+        border: none;
     }
 `
