@@ -24,7 +24,8 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
     const API = `http://localhost:5000/update`;
     const likeAPI = `http://localhost:5000/like`;
     const unlikeAPI = `http://localhost:5000/unlike/${postId}`;
-    const postCommentsAPI = `http://localhost:5000/comments/${postId}`;
+    const getCommentsAPI = `http://localhost:5000/comments/${postId}`;
+    const postCommentsAPI = `http://localhost:5000/comments`;
     const [postComments, setpostComments] = useState([]);
     const [comments, setComments] = useState("");
     const [like, setLike] = useState(false);
@@ -82,10 +83,9 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
         }
     };
     async function likePost() {
-        
+       
         const body = { postId };
-        
-        if (like === false) {
+     if (like === false) {
             setLike(true);
             
             try {
@@ -97,9 +97,7 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
             }
         } if (like === true) {
             setLike(false);
-
-
-            try {
+           try {
                 const config = { headers: { Authorization: `Bearer ${token.token}` } }
                 await axios.delete(unlikeAPI, config);
                 return;
@@ -115,11 +113,9 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
             setShow(true);
             try {
                 const config = {headers: {Authorization: `Bearer ${token.token}`}}
-                const response = await axios.get(postCommentsAPI, config);
+                const response = await axios.get(getCommentsAPI, config);
                 setpostComments(response.data);
-               console.log(postComments)
-              
-               return;
+                return;
             } catch (error) {
                 return alert(`It wasn't possible to like the post.`)
             }
@@ -127,7 +123,20 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
             setShow(false);
         }
     }
-
+    async function postComment() {
+        
+        const body = { postId , comment:comments};   
+    
+            try {
+                const config = { headers: { Authorization: `Bearer ${token.token}` } }
+                await axios.post(postCommentsAPI, body, config);
+                return;
+              
+            } catch (error) {
+                return alert(`It wasn't possible to comment the post.`)
+            }
+        
+    }
     return (
         <Container>
             <div id="post">
@@ -178,11 +187,11 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
                         <img src={urlImage} alt="imagem da url" />
                     </div>
                 </a>
-                <div>
+                <div id="teste">
                     {show ? <div id="commentsArea">
                     <div>   
                         {postComments.length === 0 ?
-                      <p>'Não há registros e entradas'</p> 
+                      <p></p> 
                     :
                     postComments.map((extract) => {
                         return(
@@ -202,7 +211,7 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
                         <img src={userImage} alt="foto do usuário" />
                         <div id="inputArea" >
                         <input type="text" placeholder="write a comment" value={comments} onChange={e => {setComments(e.target.value)}} required/>
-                        < TbSend size={20} cursor="pointer" color="white" />
+                        < TbSend size={20} cursor="pointer" color="white" onClick={postComment} />
                         </div>
                         </div>       
                 </div> : null}
@@ -223,6 +232,13 @@ const Container = styled.div`
     font-style: normal;
     font-weight: 400;
     margin-bottom: 16px;
+    z-index:1;
+
+    div#teste{
+        position: relative;
+        margin-top:-10px;
+  
+    }
 
     div#user {
         width: 55px;
@@ -489,7 +505,6 @@ const Container = styled.div`
         position:absolute;
         width:100%;
         top:100%;
-        bottom:0;
     }
 
 
