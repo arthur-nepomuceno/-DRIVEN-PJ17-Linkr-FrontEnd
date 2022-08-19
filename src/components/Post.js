@@ -109,7 +109,6 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
 
     async function commenttoggle() {
         if (show === false) {
-            
             setShow(true);
             try {
                 const config = {headers: {Authorization: `Bearer ${token.token}`}}
@@ -130,6 +129,7 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
             try {
                 const config = { headers: { Authorization: `Bearer ${token.token}` } }
                 await axios.post(postCommentsAPI, body, config);
+                setComments("")
                 return;
               
             } catch (error) {
@@ -138,6 +138,7 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
         
     }
     return (
+        <>
         <Container>
             <div id="post">
                 <div id="user">
@@ -187,7 +188,12 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
                         <img src={urlImage} alt="imagem da url" />
                     </div>
                 </a>
-                <div id="teste">
+                
+            </div>
+            
+        </Container>
+        <Comment>
+        <div id="teste">
                     {show ? <div id="commentsArea">
                     <div>   
                         {postComments.length === 0 ?
@@ -196,7 +202,7 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
                     postComments.map((extract) => {
                         return(
                             <div id="oneComment">
-                                <img src={extract.userImage} alt="imagem da url" />
+                                <img src={extract.userimage} alt="imagem da url" />
                                 <span>
                                     <h5>{extract.username}</h5>
                                     <h4>{extract.comment}</h4>
@@ -216,9 +222,8 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
                         </div>       
                 </div> : null}
                 </div>
-            </div>
-
-        </Container>
+                </Comment>
+        </>
     );
 }
 
@@ -235,11 +240,13 @@ const Container = styled.div`
     z-index:1;
 
     div#teste{
-        position: sticky;
-        margin-top:-10px;
-  
+        position: relative;
+        top:100%;
+        margin-top:-20px;
+        background: #1E1E1E;
+        z-index:1;
     }
-
+    
     div#user {
         width: 55px;
         height: 100%;
@@ -274,7 +281,14 @@ const Container = styled.div`
         flex-direction: column;
         align-items: center; 
     }
-
+    div#comment{
+        color: #FFFFFF;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; 
+        
+    }
     div#like h5, div#comment h5, div#repost h5 {
         font-size: 10px;
         line-height: 13px;
@@ -485,78 +499,89 @@ const Container = styled.div`
             bottom: -1%;
         }
     }
-    div#comment{
-        color: #FFFFFF;
-        margin-bottom: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center; 
-        
-    }
-    div#commentsArea img, div#oneComment img {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-    }
     
-    div#commentsArea{
-        background-color:red;
-        height: 50px;
-        position:absolute;
-        width:100%;
+`
+const Comment = styled.div`
+    width: 100%;
+    background: #1E1E1E;
+    border-radius: 16px;
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    z-index:0;
+    margin-bottom: 16px;
+    margin-top:-45px; 
+
+    div#teste{
         top:100%;
-    }
-
-
-    div#oneComment{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin: 5x 10px 30px 30px;
-        border-radius: 5px;
-        padding-left: 15px;
-    }
-    div#oneComment span{
-        width:90%;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        flex-direction: column;
-    }
-    div#oneComment h5{
-        ont-family: 'Lato';
-        font-style: normal;
-        font-weight: 700;
-        font-size: 14px;
-        line-height: 17px;
-        color: #F3F3F3;
-    }
-    div#oneComment h4{
-        font-family: 'Lato';
-        font-style: normal;
-        font-weight: 400;
-        font-size: 14px;
-        line-height: 17px;
-        color: #ACACAC;
-    }
-
-    div#sendComment{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        margin-top:0;
+        padding-top:4%;
+        background: #1E1E1E;
+        z-index:1;
+        border-radius: 16px;
     }
     
-    div#inputArea{
-        width: 90%;
-        background: #252525;
-        padding: 15px;
-        
-    }
 
-    div#inputArea input{
-        padding: 5px;
-        width:90%;
-        background: #252525;
-        border: none;
-    }
+div#commentsArea img, div#oneComment img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    
+}
+
+div#oneComment{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 28px 0px 28px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #353535;
+}
+div#oneComment span{
+    width:90%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-direction: column;
+}
+div#oneComment h5{
+    ont-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 17px;
+    color: #F3F3F3;
+}
+div#oneComment h4{
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    color: #ACACAC;
+}
+
+div#sendComment{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding:25px;
+}
+
+div#inputArea{
+    width: 90%;
+    background: #252525;
+    padding: 10px 0px 10px 0px;
+    border-radius: 8px;
+
+    
+}
+
+div#inputArea input{
+    padding: 5px;
+    width:90%;
+    background: #252525;
+    border: none;
+}
+
 `
