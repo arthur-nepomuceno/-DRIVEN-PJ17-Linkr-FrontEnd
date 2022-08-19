@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState, useEffect, useContext } from "react";
 import { Oval } from "react-loader-spinner";
+import InfiniteScroll from "react-infinite-scroll-component";
 import ReactModal from 'react-modal';
 import UserContext from "../contexts/UserContext";
 import Header from "../components/Header";
@@ -8,8 +9,6 @@ import Publish from "../components/Publish";
 import Post from "../components/Post";  
 import axios from "axios";
 import HashtagBox from "../components/HashtagBox";
-
-import useInfiniteScroll from "../hooks/useInfiniteScroll";
 
 export default function Timeline(){
     const [click, setClick] = useState(false);
@@ -20,11 +19,11 @@ export default function Timeline(){
     const [thisPost, setThisPost] = useState(null);
     const [awaitServer, setAwaitServer] = useState(false);
     const {token, posts, setPosts} = useContext(UserContext);
-    const timelineAPI = 'http://localhost:5000/timeline';
-    const deleteAPI = `http://localhost:5000/delete/${thisPost}`;
-/*  const timelineAPI = 'https://driven-pj17-linkr.herokuapp.com/timeline';
+    //const timelineAPI = 'http://localhost:5000/timeline';
+    //const deleteAPI = `http://localhost:5000/delete/${thisPost}`;
+    const timelineAPI = 'https://driven-pj17-linkr.herokuapp.com/timeline';
     const deleteAPI = `https://driven-pj17-linkr.herokuapp.com/delete/${thisPost}`;
- */
+ 
     function hide(){
         if(show === true) {
             setShow(false);
@@ -32,23 +31,20 @@ export default function Timeline(){
         }
     }
 
-    useInfiniteScroll();
-
-    // async function getPosts(){
-    //     try {
-    //         const config = {headers: {Authorization: `Bearer ${token.token}`}}
-    //         const response = await axios.get(timelineAPI, config);
-    //         setPosts(response.data);
-    //         console.log(response.data);
-    //         return;
-    //     } catch(error) {
-    //         setError(true);
-    //         return console.log(error);
+    async function getPosts(){
+        try {
+            const config = {headers: {Authorization: `Bearer ${token.token}`}}
+            const response = await axios.get(timelineAPI, config);
+            setPosts(response.data);
+            return;
+        } catch(error) {
+            setError(true);
+            return console.log(error);
             
-    //     }
-    // }
+        }
+    }
 
-    // useEffect(() => {getPosts()}, [loading])
+    useEffect(() => {getPosts()}, [loading])
 
     async function confirmDeletePost(){
         try {
@@ -97,8 +93,8 @@ export default function Timeline(){
                                      <Oval color="#FFFFFF" secondaryColor="#FFFFFF"/>
                                      <p>... loading ...</p>
                                   </>
-                                : posts.length === 0 ? <p>There are no posts yet.</p>
-                                                     : posts.map((post, index) => <Post key={index}
+                                : posts.length === 0 ?  <p>There are no posts yet.</p>
+                                                     :  posts.map((post, index) => <Post key={index}
                                                                                         setModal={setModal}
                                                                                         postId = {post.id}
                                                                                         userId={post.userId}
@@ -112,6 +108,7 @@ export default function Timeline(){
                                                                                         likesCount={post.likesCount}
                                                                                         likedBy={post.likedBy}
                                                                                         setThisPost={setThisPost}/>)}
+                                                    
             </TimelinePage>
             <HashtagBox />
         </Container>

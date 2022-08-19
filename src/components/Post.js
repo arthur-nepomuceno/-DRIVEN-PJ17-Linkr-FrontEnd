@@ -17,7 +17,7 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
     const [update, setUpdate] = useState(false);
     const [disable, setDisable] = useState(false);
     const [deletePostId, setdeletePostId] = useState(null);
-    const { token } = useContext(UserContext);
+    const { token, posts } = useContext(UserContext);
     const decode = decodeToken(token.token);
     const isPostOwner = decode.id === userId;
     const API = `http://localhost:5000/update`;
@@ -25,11 +25,15 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
     const unlikeAPI = `http://localhost:5000/unlike/${deletePostId}`;
     const navigate = useNavigate();
     const [like, setLike] = useState(() => {
-        for(let i = 0; i <= likedBy.length; i++){
-            if(userName === likedBy[i]){
-                return true;
-            }
-        } return false;
+        if(!posts["likedBy"]){
+            return false;
+        } else {
+            for(let i = 0; i <= likedBy.length; i++){
+                if(userName === likedBy[i]){
+                    return true;
+                }
+            } return false;
+        }
     });
     
     function redirectHashtagPage(hashtag){

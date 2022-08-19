@@ -11,7 +11,7 @@ import HashtagPage from "./containers/HashtagPage";
 export default function App() {
 
   const [token, setToken] = useState('');
-  const [posts, setPosts] = useState(null);
+  const [posts, setPosts] = useState([]);
   const context = {token, setToken, posts, setPosts};
 
   return (
