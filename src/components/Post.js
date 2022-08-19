@@ -9,8 +9,6 @@ import { decodeToken } from "react-jwt";
 import UserContext from "../contexts/UserContext";
 import axios from "axios";
 import { AiFillHeart, AiOutlineComment } from "react-icons/ai";
-import { BiRepost } from "react-icons/bi";
-import { TbSend } from "react-icons/tb";
 import CommentComponent from "./Comments";
 
 export default function Post({ setModal, postId, userId, userImage, userName, postDescription, urlTitle, urlDescription, postUrl, urlImage, likesCount, likedBy, setThisPost, commentsCount }) {
@@ -31,8 +29,8 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
     const [like, setLike] = useState(false);
     const [show, setShow] = useState(false);
     const navigate = useNavigate();
-   
-    
+
+
     function redirectHashtagPage(hashtag) {
 
         navigate('/hashtag/' + hashtag, { state: { hashtag } });
@@ -81,8 +79,8 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
         }
     };
     async function likePost() {
-    const body = { postId };
-     if (like === false) {
+        const body = { postId };
+        if (like === false) {
             setLike(true);
 
             try {
@@ -94,7 +92,7 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
             }
         } if (like === true) {
             setLike(false);
-           try {
+            try {
                 const config = { headers: { Authorization: `Bearer ${token.token}` } }
                 await axios.delete(unlikeAPI, config);
                 return;
@@ -108,7 +106,7 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
         if (show === false) {
             setShow(true);
             try {
-                const config = {headers: {Authorization: `Bearer ${token.token}`}}
+                const config = { headers: { Authorization: `Bearer ${token.token}` } }
                 const response = await axios.get(getCommentsAPI, config);
                 setpostComments(response.data);
                 return;
@@ -119,63 +117,71 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
             setShow(false);
         }
     }
-    
+
     return (
         <>
-        <Container>
-            <div id="post">
-                <div id="user">
-                    <img src={userImage} alt="foto do usuário" />
-                    <div id="icons" >
-                        <div id="like">
-                            <div onClick={likePost}>
-                                {like ? (< AiFillHeart size={20} cursor="pointer" color="red" />) : (< HiOutlineHeart size={20} cursor="pointer" />)}
+            <Container>
+                <div id="post">
+                    <div id="user">
+                        <img src={userImage} alt="foto do usuário" />
+                        <div id="icons" >
+                            <div id="like">
+                                <div onClick={likePost}>
+                                    {like ? (< AiFillHeart size={20} cursor="pointer" color="red" />) : (< HiOutlineHeart size={20} cursor="pointer" />)}
+                                </div>
+                                {likesCount === '0' ? ''
+                                    : likesCount === '1' ? <h5>{likesCount} like</h5>
+                                        : <h5>{likesCount} likes</h5>}
                             </div>
-                            {likesCount === '0' ? ''
-                                : likesCount === '1' ? <h5>{likesCount} like</h5>
-                                    : <h5>{likesCount} likes</h5>}
-                        </div>
-                        <div id="comment">
-                            <div onClick={commenttoggle}>
-                                < AiOutlineComment size={20} cursor="pointer" color="white" />
+                            <div id="comment">
+                                <div onClick={commenttoggle}>
+                                    < AiOutlineComment size={20} cursor="pointer" color="white" />
+                                </div>
+                                {commentsCount === '0' ? ''
+                                    : commentsCount === '1' ? <h5>{commentsCount} comment</h5>
+                                        : <h5>{commentsCount} comments</h5>}
                             </div>
-                            {commentsCount === '0' ? ''
-                                : commentsCount === '1' ? <h5>{commentsCount} comment</h5>
-                                    : <h5>{commentsCount} comments</h5>}
+
                         </div>
-                        
                     </div>
+                    <div id="head">
+                        <h1>{userName}</h1>
+                        <div id="edit" onClick={editPost} hidden={!isPostOwner}>
+                            <ImPencil2 cursor="pointer" />
+                        </div>
+                        <div id="delete" onClick={deletePost} hidden={!isPostOwner}>
+                            <FaTrash cursor="pointer" />
+                        </div>
+                        <ReactTagify
+                            tagStyle={{ cursor: "pointer", fontWeight: "bold", color: "#ffffff" }}
+                            tagClicked={(tag) => redirectHashtagPage(tag.replace("#", ""))}
+                        >
+                            <h2>{postDescription}</h2>
+                            <h2>{!edit ? newPost
+                                : <textarea type="text" onKeyDown={pressKey} disabled={disable} autoFocus={edit} maxLength="120" value={newPost} onChange={e => setNewPost(e.target.value)} on />}</h2>
+                        </ReactTagify>
+                    </div>
+                    <a href={postUrl} target="_blank">
+                        <div id="url">
+                            <h3>{urlTitle}</h3>
+                            <h4>{urlDescription}</h4>
+                            <h5>{postUrl}</h5>
+                            <img src={urlImage} alt="imagem da url" />
+                        </div>
+                    </a>
+
                 </div>
-                <div id="head">
-                    <h1>{userName}</h1>
-                    <div id="edit" onClick={editPost} hidden={!isPostOwner}>
-                        <ImPencil2 cursor="pointer" />
-                    </div>
-                    <div id="delete" onClick={deletePost} hidden={!isPostOwner}>
-                        <FaTrash cursor="pointer" />
-                    </div>
-                </div>
-                <a href={postUrl} target="_blank">
-                    <div id="url">
-                        <h3>{urlTitle}</h3>
-                        <h4>{urlDescription}</h4>
-                        <h5>{postUrl}</h5>
-                        <img src={urlImage} alt="imagem da url" />
-                    </div>
-                </a>
-                
-            </div>
-            
-        </Container>
-        <CommentComponent postId={postId} 
-                          userImage={imgUrl}
-                          show={show}
-                          setpostComments={setpostComments}
-                          postComments={postComments}
-                          likesCount={likesCount}
-                          >
- 
-        </CommentComponent>
+
+            </Container>
+            <CommentComponent postId={postId}
+                userImage={imgUrl}
+                show={show}
+                setpostComments={setpostComments}
+                postComments={postComments}
+                likesCount={likesCount}
+            >
+
+            </CommentComponent>
         </>
     );
 }
