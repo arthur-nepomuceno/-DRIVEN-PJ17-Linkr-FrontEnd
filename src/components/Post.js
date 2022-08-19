@@ -8,10 +8,11 @@ import { useState, useContext } from "react";
 import { decodeToken } from "react-jwt";
 import UserContext from "../contexts/UserContext";
 import axios from "axios";
-import { AiFillHeart } from "react-icons/ai";
+import { AiFillHeart, AiOutlineComment } from "react-icons/ai";
+import CommentComponent from "./Comments";
 
-export default function Post({setModal, postId, userId, userImage, userName, postDescription, urlTitle, urlDescription, postUrl, urlImage, likesCount, likedBy, setThisPost}){
-    
+export default function Post({ setModal, postId, userId, userImage, userName, postDescription, urlTitle, urlDescription, postUrl, urlImage, likesCount, likedBy, setThisPost, commentsCount }) {
+
     const [edit, setEdit] = useState(false);
     const [newPost, setNewPost] = useState(postDescription);
     const [update, setUpdate] = useState(false);
@@ -19,11 +20,18 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
     const [deletePostId, setdeletePostId] = useState(null);
     const { token, posts } = useContext(UserContext);
     const decode = decodeToken(token.token);
+    const imgUrl = decode.pictureUrl;
     const isPostOwner = decode.id === userId;
-    const API = `http://localhost:5000/update`;
-    const likeAPI = `http://localhost:5000/like`;
-    const unlikeAPI = `http://localhost:5000/unlike/${deletePostId}`;
+    const API = `https://driven-pj17-linkr.herokuapp.com/update`;
+    const likeAPI = `https://driven-pj17-linkr.herokuapp.com/like`;
+    const unlikeAPI = `https://driven-pj17-linkr.herokuapp.com/unlike/${postId}`;
+    const getCommentsAPI = `https://driven-pj17-linkr.herokuapp.com/comments/${postId}`;
+    const [postComments, setpostComments] = useState([]);
+    const [show, setShow] = useState(false);
     const navigate = useNavigate();
+
+
+    
     const [like, setLike] = useState(() => {
         if(!posts["likedBy"]){
             return false;
@@ -40,8 +48,8 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
         navigate('/hashtag/' + hashtag, {state: { hashtag }});
     }
 
-    function editPost(){
-        if(edit === false){
+    function editPost() {
+        if (edit === false) {
             setEdit(true);
         } else {
             setEdit(false);
@@ -49,108 +57,144 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
         }
     }
 
-    async function deletePost(){
+    async function deletePost() {
         setModal(true);
         setThisPost(postId);
     }
 
-    async function pressKey(event){
-        if(event.key === 'Escape'){
+    async function pressKey(event) {
+        if (event.key === 'Escape') {
             setEdit(false);
 
-            if(update === false){
+            if (update === false) {
                 setNewPost(postDescription);
             } else {
                 setNewPost(newPost);
             }
         }
 
-        if(event.key === 'Enter'){
+        if (event.key === 'Enter') {
             setDisable(true);
-            const config = {headers: {Authorization: `Bearer ${token.token}`}};
-            const body = {content: newPost, id: postId};
+            const config = { headers: { Authorization: `Bearer ${token.token}` } };
+            const body = { content: newPost, id: postId };
             try {
                 await axios.put(API, body, config);
                 setDisable(false);
                 setEdit(false);
                 setUpdate(true);
                 return;
-            } catch(error) {
+            } catch (error) {
                 alert(`Sorry, it wasn't possible to save your editing.`)
                 setEdit(true);
                 return console.log(error.response.data);
             }
         }
     };
-    
-    async function likePost(){
-
-        //setdeletePostId(postId);
-        const body = {postId};
-
-        if(like === false){
+    async function likePost() {
+        const body = { postId };
+        if (like === false) {
             setLike(true);
-            
+
             try {
-                const config = {headers: {Authorization: `Bearer ${token.token}`}}
+                const config = { headers: { Authorization: `Bearer ${token.token}` } }
                 await axios.post(likeAPI, body, config);
                 return;
-            } catch(error) {
+            } catch (error) {
                 return alert(`It wasn't possible to like the post.`)
             }
-        }
-        
-        if(like === true) {
-            setLike(false);       
-            //setdeletePostId(postId)
-        
+        } if (like === true) {
+            setLike(false);
             try {
-                const config = {headers: {Authorization: `Bearer ${token.token}`}}
+                const config = { headers: { Authorization: `Bearer ${token.token}` } }
                 await axios.delete(unlikeAPI, config);
                 return;
-            } catch(error) {
-                return alert(`It wasn't possible to unlike the post.`)
+            } catch (error) {
+                return alert(`It wasn't possible to like the post.`)
             }
         }
     }
 
+    async function commenttoggle() {
+        if (show === false) {
+            setShow(true);
+            try {
+                const config = { headers: { Authorization: `Bearer ${token.token}` } }
+                const response = await axios.get(getCommentsAPI, config);
+                setpostComments(response.data);
+                return;
+            } catch (error) {
+                return alert(`It wasn't possible to comment the post.`)
+            }
+        } else {
+            setShow(false);
+        }
+    }
+
     return (
-        <Container>
-            <div id="user">
-                <img src={userImage} alt="foto do usuário"/>
-                <div id="like" onClick={likePost}>
-                    {like ? (< AiFillHeart size={20} cursor="pointer" color="red"/> ): (< HiOutlineHeart size={20} cursor="pointer"/>)}
-                    {likesCount === '0' ? '' 
-                                        : likesCount === '1' ? <h5>{likesCount} like</h5>
-                                                             : <h5>{likesCount} likes</h5>}
+        <>
+            <Container>
+                <div id="post">
+                    <div id="user">
+                        <img src={userImage} alt="foto do usuário" />
+                        <div id="icons" >
+                            <div id="like">
+                                <div onClick={likePost}>
+                                    {like ? (< AiFillHeart size={20} cursor="pointer" color="red" />) : (< HiOutlineHeart size={20} cursor="pointer" />)}
+                                </div>
+                                {likesCount === '0' ? ''
+                                    : likesCount === '1' ? <h5>{likesCount} like</h5>
+                                        : <h5>{likesCount} likes</h5>}
+                            </div>
+                            <div id="comment">
+                                <div onClick={commenttoggle}>
+                                    < AiOutlineComment size={20} cursor="pointer" color="white" />
+                                </div>
+                                {commentsCount === '0' ? ''
+                                    : commentsCount === '1' ? <h5>{commentsCount} comment</h5>
+                                        : <h5>{commentsCount} comments</h5>}
+                            </div>
+
+                        </div>
+                    </div>
+                    <div id="head">
+                        <h1>{userName}</h1>
+                        <div id="edit" onClick={editPost} hidden={!isPostOwner}>
+                            <ImPencil2 cursor="pointer" />
+                        </div>
+                        <div id="delete" onClick={deletePost} hidden={!isPostOwner}>
+                            <FaTrash cursor="pointer" />
+                        </div>
+                        <ReactTagify
+                            tagStyle={{ cursor: "pointer", fontWeight: "bold", color: "#ffffff" }}
+                            tagClicked={(tag) => redirectHashtagPage(tag.replace("#", ""))}
+                        >
+                            <h2>{postDescription}</h2>
+                            <h2>{!edit ? newPost
+                                : <textarea type="text" onKeyDown={pressKey} disabled={disable} autoFocus={edit} maxLength="120" value={newPost} onChange={e => setNewPost(e.target.value)} on />}</h2>
+                        </ReactTagify>
+                    </div>
+                    <a href={postUrl} target="_blank">
+                        <div id="url">
+                            <h3>{urlTitle}</h3>
+                            <h4>{urlDescription}</h4>
+                            <h5>{postUrl}</h5>
+                            <img src={urlImage} alt="imagem da url" />
+                        </div>
+                    </a>
+
                 </div>
-            </div>
-            <div id="head">
-                <h1>{userName}</h1>
-                <div id="edit" onClick={editPost} hidden={!isPostOwner}>
-                    <ImPencil2 cursor="pointer"/>
-                </div>
-                <div id="delete" onClick={deletePost} hidden={!isPostOwner}>
-                    <FaTrash cursor="pointer"/>
-                </div>
-                <ReactTagify 
-                    tagStyle={{cursor: "pointer", fontWeight: "bold", color: "#ffffff"}}
-                    tagClicked={(tag) => redirectHashtagPage(tag.replace("#",""))}
-                >
-                    <h2>{postDescription}</h2>
-                <h2>{!edit? newPost 
-                          : <textarea type="text" onKeyDown={pressKey} disabled={disable} autoFocus={edit} maxLength="120" value={newPost} onChange={e => setNewPost(e.target.value)} on/>}</h2>
-                </ReactTagify>
-            </div>
-            <a href={postUrl} target="_blank">
-                <div id="url">
-                    <h3>{urlTitle}</h3>
-                    <h4>{urlDescription}</h4>
-                    <h5>{postUrl}</h5>
-                    <img src={urlImage} alt="imagem da url"/>
-                </div> 
-            </a>
-        </Container>
+
+            </Container>
+            <CommentComponent postId={postId}
+                userImage={imgUrl}
+                show={show}
+                setpostComments={setpostComments}
+                postComments={postComments}
+                likesCount={likesCount}
+            >
+
+            </CommentComponent>
+        </>
     );
 }
 
@@ -164,16 +208,26 @@ const Container = styled.div`
     font-style: normal;
     font-weight: 400;
     margin-bottom: 16px;
+    z-index:1;
 
+    div#teste{
+        position: relative;
+        top:100%;
+        margin-top:-20px;
+        background: #1E1E1E;
+        z-index:1;
+    }
+    
     div#user {
-        width: 50px;
-        height: 39%;
-        position: absolute;
+        width: 55px;
+        height: 100%;
+        position: absolute ;
         top: 7%;
         left: 3%;
         display: flex;
         flex-direction: column;
-        align-items: center;     
+        align-items: center; 
+        
     }
 
     div#user img {
@@ -181,18 +235,33 @@ const Container = styled.div`
         height: 50px;
         border-radius: 50%;
     }
-
+   
     div#like {
         color: #FFFFFF;
-        position: absolute;
-        top: 65%;
+        margin-bottom: 20px;
+        margin-top: 20px;
         display: flex;
         flex-direction: column;
-        align-items: center;      
+        align-items: center; 
     }
-
-    div#like h5 {
-        font-size: 11px;
+    
+    div#repost {
+        color: #FFFFFF;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; 
+    }
+    div#comment{
+        color: #FFFFFF;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; 
+        
+    }
+    div#like h5, div#comment h5, div#repost h5 {
+        font-size: 10px;
         line-height: 13px;
         text-align: center;
         margin-top: 3px;
@@ -401,4 +470,5 @@ const Container = styled.div`
             bottom: -1%;
         }
     }
+    
 `

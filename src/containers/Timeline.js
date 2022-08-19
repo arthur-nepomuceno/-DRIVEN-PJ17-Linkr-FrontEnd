@@ -5,7 +5,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import ReactModal from 'react-modal';
 import UserContext from "../contexts/UserContext";
 import Header from "../components/Header";
-import Publish from "../components/Publish";
+import Publish from "../components/publish";
 import Post from "../components/Post";  
 import axios from "axios";
 import HashtagBox from "../components/HashtagBox";
@@ -21,9 +21,10 @@ export default function Timeline(){
     const {token, posts, setPosts} = useContext(UserContext);
     //const timelineAPI = 'http://localhost:5000/timeline';
     //const deleteAPI = `http://localhost:5000/delete/${thisPost}`;
-    const timelineAPI = 'https://driven-pj17-linkr.herokuapp.com/timeline';
+    
+  const timelineAPI = 'https://driven-pj17-linkr.herokuapp.com/timeline';
     const deleteAPI = `https://driven-pj17-linkr.herokuapp.com/delete/${thisPost}`;
-
+ 
     function hide(){
         if(show === true) {
             setShow(false);
@@ -106,6 +107,7 @@ export default function Timeline(){
                                                                                         postUrl={post.postUrl}
                                                                                         urlImage={post.urlImage}
                                                                                         likesCount={post.likesCount}
+                                                                                        commentsCount={post.commentsCount}
                                                                                         likedBy={post.likedBy}
                                                                                         setThisPost={setThisPost}/>)}
                                                     

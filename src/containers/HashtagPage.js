@@ -4,67 +4,69 @@ import { useLocation } from "react-router-dom";
 import { Oval } from "react-loader-spinner";
 import UserContext from "../contexts/UserContext";
 import Header from "../components/Header";
-import Post from "../components/Post";  
+import Post from "../components/Post";
 import axios from "axios";
 import HashtagBox from "../components/HashtagBox";
 
-export default function HashtagPage(){
+export default function HashtagPage() {
     const [click, setClick] = useState(false);
     const [show, setShow] = useState(false);
     const [error, setError] = useState(false);
     const location = useLocation();
     const { hashtag } = location.state;
-    const {token, posts, setPosts} = useContext(UserContext);
-    const API = 'http://localhost:5000/hashtag/' + hashtag;
+    const { token, posts, setPosts } = useContext(UserContext);
+    const API = 'https://driven-pj17-linkr.herokuapp.com/' + hashtag;
 
-    function hide(){
-        if(show === true) {
+    function hide() {
+        if (show === true) {
             setShow(false);
             setClick(false);
         }
     }
 
-    async function getHashtagPosts(){
+    async function getHashtagPosts() {
         try {
-            const config = {headers: {Authorization: `Bearer ${token.token}`}}
+            const config = { headers: { Authorization: `Bearer ${token.token}` } }
             const response = await axios.get(API, config);
             setPosts(response.data);
             return;
-        } catch(error) {
+        } catch (error) {
             setError(true);
             return console.log(error);
         }
     }
 
-    useEffect(() => {getHashtagPosts()}, [hashtag])
+    useEffect(() => { getHashtagPosts() }, [hashtag])
 
     return (
         <Container onClick={hide}>
-            <Header 
-                click={click} 
-                setClick={setClick} 
-                show={show} 
-                setShow={setShow} 
+            <Header
+                click={click}
+                setClick={setClick}
+                show={show}
+                setShow={setShow}
                 hide={hide}
             />
             <Title># {hashtag}</Title>
             <PostsHashtag>
                 {error ? <p>An error occured while trying to fetch the posts, please refresh the page.</p>
-                       : !posts ? <>
-                                     <Oval color="#FFFFFF" secondaryColor="#FFFFFF"/>
-                                     <p>... loading ...</p>
-                                  </>
-                                : posts.length === 0 ? <p>There are no posts yet.</p>
-                                                     : posts.map((post, index) => <Post key={index}
-                                                                                        userImage={post.userImage}
-                                                                                        userName={post.userName}
-                                                                                        postDescription={post.postDescription}
-                                                                                        urlTitle={post.urlTitle}
-                                                                                        urlDescription={post.urlDescription}
-                                                                                        postUrl={post.postUrl}
-                                                                                        urlImage={post.urlImage}
-                                                                                        likesCount={post.likesCount}
-                                                                                        likedBy={post.likedBy}/>)}
+                    : !posts ? <>
+                        <Oval color="#FFFFFF" secondaryColor="#FFFFFF" />
+                        <p>... loading ...</p>
+                    </>
+                        : posts.length === 0 ? <p>There are no posts yet.</p>
+                            : posts.map((post, index) => <Post key={index}
+                                userImage={post.userImage}
+                                userName={post.userName}
+                                postDescription={post.postDescription}
+                                urlTitle={post.urlTitle}
+                                urlDescription={post.urlDescription}
+                                postUrl={post.postUrl}
+                                urlImage={post.urlImage}
+                                likesCount={post.likesCount}
+                                likedBy={post.likedBy} />)}
+                                
+               
             </PostsHashtag>
             <HashtagBox />
         </Container>
@@ -72,7 +74,7 @@ export default function HashtagPage(){
 
 }
 
-const Container = styled.div `
+const Container = styled.div`
     width: 100vw;
     height: 100vh;
     display: flex;
@@ -83,7 +85,7 @@ const Container = styled.div `
         position: relative;
     }
 `
-const Title = styled.div `
+const Title = styled.div`
     width: 100%;
     height: 6%;
     display: flex;
@@ -108,7 +110,7 @@ const Title = styled.div `
 
 `
 
-const PostsHashtag = styled.div `
+const PostsHashtag = styled.div`
     width: 42%;
     height: 53%;
     display: flex;
