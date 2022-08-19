@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState, useEffect, useContext } from "react";
 import { Oval } from "react-loader-spinner";
+import InfiniteScroll from "react-infinite-scroll-component";
 import ReactModal from 'react-modal';
 import UserContext from "../contexts/UserContext";
 import Header from "../components/Header";
@@ -14,6 +15,7 @@ export default function Timeline(){
     const [show, setShow] = useState(false);
     const [error, setError] = useState(false);
     const [modal, setModal] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [thisPost, setThisPost] = useState(null);
     const [awaitServer, setAwaitServer] = useState(false);
     const {token, posts, setPosts} = useContext(UserContext);
@@ -30,7 +32,6 @@ export default function Timeline(){
         }
     }
 
-
     async function getPosts(){
         try {
             const config = {headers: {Authorization: `Bearer ${token.token}`}}
@@ -43,7 +44,8 @@ export default function Timeline(){
             
         }
     }
-    useEffect(() => {getPosts()}, [])
+
+    useEffect(() => {getPosts()}, [loading])
 
     async function confirmDeletePost(){
         try {
@@ -72,7 +74,7 @@ export default function Timeline(){
                 hide={hide}
             />
             <Title>timeline</Title>
-            <Publish></Publish>
+            <Publish loading={loading} setLoading={setLoading}></Publish>
             <TimelinePage>
                 <Modal isOpen={modal}>
                     {!awaitServer ? <p>Are you sure you want to delete this post?</p>
@@ -88,12 +90,12 @@ export default function Timeline(){
                     </div>
                 </Modal>
                 {error ? <p>An error occured while trying to fetch the posts, please refresh the page.</p>
-                       : !posts ? <>
+                       : !posts || loading ? <>
                                      <Oval color="#FFFFFF" secondaryColor="#FFFFFF"/>
                                      <p>... loading ...</p>
                                   </>
-                                : posts.length === 0 ? <p>There are no posts yet.</p>
-                                                     : posts.map((post, index) => <Post key={index}
+                                : posts.length === 0 ?  <p>There are no posts yet.</p>
+                                                     :  posts.map((post, index) => <Post key={index}
                                                                                         setModal={setModal}
                                                                                         postId = {post.id}
                                                                                         userId={post.userId}
@@ -108,6 +110,7 @@ export default function Timeline(){
                                                                                         commentsCount={post.commentsCount}
                                                                                         likedBy={post.likedBy}
                                                                                         setThisPost={setThisPost}/>)}
+                                                    
             </TimelinePage>
             <HashtagBox />
         </Container>

@@ -17,7 +17,8 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
     const [newPost, setNewPost] = useState(postDescription);
     const [update, setUpdate] = useState(false);
     const [disable, setDisable] = useState(false);
-    const { token } = useContext(UserContext);
+    const [deletePostId, setdeletePostId] = useState(null);
+    const { token, posts } = useContext(UserContext);
     const decode = decodeToken(token.token);
     const imgUrl = decode.pictureUrl;
     const isPostOwner = decode.id === userId;
@@ -26,14 +27,25 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
     const unlikeAPI = `https://driven-pj17-linkr.herokuapp.com/unlike/${postId}`;
     const getCommentsAPI = `https://driven-pj17-linkr.herokuapp.com/comments/${postId}`;
     const [postComments, setpostComments] = useState([]);
-    const [like, setLike] = useState(false);
     const [show, setShow] = useState(false);
     const navigate = useNavigate();
 
 
-    function redirectHashtagPage(hashtag) {
-
-        navigate('/hashtag/' + hashtag, { state: { hashtag } });
+    
+    const [like, setLike] = useState(() => {
+        if(!posts["likedBy"]){
+            return false;
+        } else {
+            for(let i = 0; i <= likedBy.length; i++){
+                if(userName === likedBy[i]){
+                    return true;
+                }
+            } return false;
+        }
+    });
+    
+    function redirectHashtagPage(hashtag){
+        navigate('/hashtag/' + hashtag, {state: { hashtag }});
     }
 
     function editPost() {

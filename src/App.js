@@ -7,12 +7,11 @@ import SignUp from "./containers/SignUp";
 import Login from "./containers/Login";
 import Timeline from "./containers/Timeline"; 
 import HashtagPage from "./containers/HashtagPage";
-import Publish from "./components/publish";
 
 export default function App() {
 
   const [token, setToken] = useState('');
-  const [posts, setPosts] = useState(null);
+  const [posts, setPosts] = useState([]);
   const context = {token, setToken, posts, setPosts};
 
   return (

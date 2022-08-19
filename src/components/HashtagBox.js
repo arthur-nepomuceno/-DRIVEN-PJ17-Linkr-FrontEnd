@@ -73,6 +73,7 @@ const Box = styled.div `
     position: absolute;
     top: 23%;
     right: 18%;
+    padding-bottom: 30px;
 
     @media (max-width: 1080px) {
         display: none;
@@ -86,6 +87,11 @@ const Title = styled.span `
     align-items: center;
     font-size: 27px;
     padding: 20px;
+    font-family: 'Oswald';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 27px;
+    line-height: 40px;
 `
 
 const Line = styled.div `
@@ -97,10 +103,16 @@ const Line = styled.div `
 
 const Hashtag = styled.div `
     width: 100%;
-    min-height: 40px;
+    height: 30px;
     display: flex;
     font-size: 18px;
     padding: 15px;
     word-break: break-all;
     cursor: pointer;
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 19px;
+    line-height: 23px;
+    letter-spacing: 0.05em;
 `
