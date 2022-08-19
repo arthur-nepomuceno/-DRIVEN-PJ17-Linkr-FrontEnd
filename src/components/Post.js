@@ -23,10 +23,10 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
     const decode = decodeToken(token.token);
     const imgUrl = decode.pictureUrl;
     const isPostOwner = decode.id === userId;
-    const API = `http://localhost:5000/update`;
-    const likeAPI = `http://localhost:5000/like`;
-    const unlikeAPI = `http://localhost:5000/unlike/${postId}`;
-    const getCommentsAPI = `http://localhost:5000/comments/${postId}`;
+    const API = `https://driven-pj17-linkr.herokuapp.com/update`;
+    const likeAPI = `https://driven-pj17-linkr.herokuapp.com/like`;
+    const unlikeAPI = `https://driven-pj17-linkr.herokuapp.com/unlike/${postId}`;
+    const getCommentsAPI = `https://driven-pj17-linkr.herokuapp.com/comments/${postId}`;
     const [postComments, setpostComments] = useState([]);
     const [like, setLike] = useState(false);
     const [show, setShow] = useState(false);
@@ -84,7 +84,7 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
     const body = { postId };
      if (like === false) {
             setLike(true);
-            
+
             try {
                 const config = { headers: { Authorization: `Bearer ${token.token}` } }
                 await axios.post(likeAPI, body, config);
@@ -154,7 +154,6 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
                     <div id="delete" onClick={deletePost} hidden={!isPostOwner}>
                         <FaTrash cursor="pointer" />
                     </div>
-
                 </div>
                 <a href={postUrl} target="_blank">
                     <div id="url">

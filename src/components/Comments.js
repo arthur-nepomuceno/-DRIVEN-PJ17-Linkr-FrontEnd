@@ -7,9 +7,9 @@ import { TbSend } from "react-icons/tb";
 export default function CommentComponent({ postId, userImage , show, setpostComments, postComments }) {
     console.log(postId)
     const { token } = useContext(UserContext);
-    const postCommentsAPI = `http://localhost:5000/comments`;
+    const postCommentsAPI = `https://driven-pj17-linkr.herokuapp.com/comments`;
     const [comments, setComments] = useState("");
-    const getCommentsAPI = `http://localhost:5000/comments/${postId}`;
+    const getCommentsAPI = `https://driven-pj17-linkr.herokuapp.com/comments/${postId}`;
 
         async function renderpostComment(){
             try {

@@ -15,7 +15,7 @@ export default function HashtagPage() {
     const location = useLocation();
     const { hashtag } = location.state;
     const { token, posts, setPosts } = useContext(UserContext);
-    const API = 'http://localhost:5000/hashtag/' + hashtag;
+    const API = 'https://driven-pj17-linkr.herokuapp.com/' + hashtag;
 
     function hide() {
         if (show === true) {

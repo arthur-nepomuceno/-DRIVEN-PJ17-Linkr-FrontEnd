@@ -13,7 +13,7 @@ export default function Publish(){
     const [url, setUrl] = useState('');
     const [content, setContent] = useState('');
     const navigate = useNavigate();
-    const API = "http://localhost:5000/publish"
+    const API = "https://driven-pj17-linkr.herokuapp.com/publish"
     const { token } = useContext(UserContext);
     const decode = decodeToken(token.token);
     const [Loading, setLoading] = useState(false);
