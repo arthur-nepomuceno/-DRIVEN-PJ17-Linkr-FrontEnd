@@ -23,13 +23,17 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
     const API = `http://localhost:5000/update`;
     const likeAPI = `http://localhost:5000/like`;
     const unlikeAPI = `http://localhost:5000/unlike/${deletePostId}`;
-    const[like, setLike] = useState(false)
     const navigate = useNavigate();
-
+    const [like, setLike] = useState(() => {
+        for(let i = 0; i <= likedBy.length; i++){
+            if(userName === likedBy[i]){
+                return true;
+            }
+        } return false;
+    });
+    
     function redirectHashtagPage(hashtag){
-
         navigate('/hashtag/' + hashtag, {state: { hashtag }});
-        
     }
 
     function editPost(){
@@ -74,40 +78,44 @@ export default function Post({setModal, postId, userId, userImage, userName, pos
             }
         }
     };
-        async function likePost(){
-        setdeletePostId(postId)
+    
+    async function likePost(){
+
+        //setdeletePostId(postId);
         const body = {postId};
+
         if(like === false){
-        setLike(true);
-        try {
-        const config = {headers: {Authorization: `Bearer ${token.token}`}}
-        await axios.post(likeAPI, body, config);
-        return;
-        } catch(error) {
-        return alert(`It wasn't possible to like the post.`)
-        }
-        }if(like === true) {
-        setLike(false);
-       
-        setdeletePostId(postId)
-        
-        try {
-            const config = {headers: {Authorization: `Bearer ${token.token}`}}
-            await axios.delete(unlikeAPI, config);
-            return;
+            setLike(true);
+            
+            try {
+                const config = {headers: {Authorization: `Bearer ${token.token}`}}
+                await axios.post(likeAPI, body, config);
+                return;
             } catch(error) {
-            return alert(`It wasn't possible to like the post.`)
+                return alert(`It wasn't possible to like the post.`)
             }
         }
+        
+        if(like === true) {
+            setLike(false);       
+            //setdeletePostId(postId)
+        
+            try {
+                const config = {headers: {Authorization: `Bearer ${token.token}`}}
+                await axios.delete(unlikeAPI, config);
+                return;
+            } catch(error) {
+                return alert(`It wasn't possible to unlike the post.`)
+            }
         }
+    }
+
     return (
         <Container>
             <div id="user">
                 <img src={userImage} alt="foto do usuário"/>
-                <div id="like">
-                <div onClick={likePost}>
-                     {like ? (< AiFillHeart size={20} cursor="pointer" color="red"/> ): (< HiOutlineHeart size={20} cursor="pointer"/>)}
-                </div>
+                <div id="like" onClick={likePost}>
+                    {like ? (< AiFillHeart size={20} cursor="pointer" color="red"/> ): (< HiOutlineHeart size={20} cursor="pointer"/>)}
                     {likesCount === '0' ? '' 
                                         : likesCount === '1' ? <h5>{likesCount} like</h5>
                                                              : <h5>{likesCount} likes</h5>}
