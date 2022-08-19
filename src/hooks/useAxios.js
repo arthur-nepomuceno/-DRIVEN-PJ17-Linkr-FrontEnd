@@ -25,7 +25,7 @@ function useAxios({ method, route, payloadHeaders, payloadBody, query }, manual 
     const [error, setError] = useState(null);
     const [response, setResponse] = useState(null);
 
-    axios.defaults.baseURL = /*process.env.AXIOS_DEFAULT_URL */ "http://localhost:5000/";
+    axios.defaults.baseURL = process.env.REACT_APP_AXIOS_URL || 'https://driven-pj17-linkr.herokuapp.com/';
 
     const config = {
         method,
@@ -55,8 +55,11 @@ function useAxios({ method, route, payloadHeaders, payloadBody, query }, manual 
             if(callback) {
                 callback();
             }
-
-            setIsLoading(false);
+            let timer;
+            clearTimeout(timer)
+            timer = setTimeout(() => {
+                setIsLoading(false);
+              }, 1000);
         }
     };
 
