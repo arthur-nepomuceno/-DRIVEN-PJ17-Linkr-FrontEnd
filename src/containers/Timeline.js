@@ -19,6 +19,7 @@ export default function Timeline(){
     const {token, posts, setPosts} = useContext(UserContext);
     const timelineAPI = 'http://localhost:5000/timeline';
     const deleteAPI = `http://localhost:5000/delete/${thisPost}`;
+    
 /*     const timelineAPI = 'https://driven-pj17-linkr.herokuapp.com/timeline';
     const deleteAPI = `https://driven-pj17-linkr.herokuapp.com/delete/${thisPost}`;
  */

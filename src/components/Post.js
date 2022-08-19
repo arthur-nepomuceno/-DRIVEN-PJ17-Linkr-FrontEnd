@@ -21,24 +21,21 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
     const [disable, setDisable] = useState(false);
     const { token } = useContext(UserContext);
     const decode = decodeToken(token.token);
+    const imgUrl = decode.pictureUrl;
     const isPostOwner = decode.id === userId;
     const API = `http://localhost:5000/update`;
     const likeAPI = `http://localhost:5000/like`;
     const unlikeAPI = `http://localhost:5000/unlike/${postId}`;
     const getCommentsAPI = `http://localhost:5000/comments/${postId}`;
-    const postCommentsAPI = `http://localhost:5000/comments`;
     const [postComments, setpostComments] = useState([]);
-    const [comments, setComments] = useState("");
     const [like, setLike] = useState(false);
     const [show, setShow] = useState(false);
     const navigate = useNavigate();
    
-   
-   
+    
     function redirectHashtagPage(hashtag) {
 
         navigate('/hashtag/' + hashtag, { state: { hashtag } });
-
     }
 
     function editPost() {
@@ -84,8 +81,7 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
         }
     };
     async function likePost() {
-       
-        const body = { postId };
+    const body = { postId };
      if (like === false) {
             setLike(true);
             
@@ -117,27 +113,13 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
                 setpostComments(response.data);
                 return;
             } catch (error) {
-                return alert(`It wasn't possible to like the post.`)
+                return alert(`It wasn't possible to comment the post.`)
             }
         } else {
             setShow(false);
         }
     }
-    async function postComment() {
-        
-        const body = { postId , comment:comments};   
     
-            try {
-                const config = { headers: { Authorization: `Bearer ${token.token}` } }
-                await axios.post(postCommentsAPI, body, config);
-                setComments("")
-                return;
-              
-            } catch (error) {
-                return alert(`It wasn't possible to comment the post.`)
-            }
-        
-    }
     return (
         <>
         <Container>
@@ -161,14 +143,7 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
                                 : commentsCount === '1' ? <h5>{commentsCount} comment</h5>
                                     : <h5>{commentsCount} comments</h5>}
                         </div>
-                        <div id="repost">
-                            <div onClick={likePost}>
-                                < BiRepost size={20} cursor="pointer" color="white" />
-                            </div>
-                            {likesCount === '0' ? ''
-                                : likesCount === '1' ? <h5>{likesCount} like</h5>
-                                    : <h5>{likesCount} likes</h5>}
-                        </div>
+                        
                     </div>
                 </div>
                 <div id="head">
@@ -193,11 +168,12 @@ export default function Post({ setModal, postId, userId, userImage, userName, po
             </div>
             
         </Container>
-        <CommentComponent post={postId} 
-                          userImage={userImage}
+        <CommentComponent postId={postId} 
+                          userImage={imgUrl}
                           show={show}
                           setpostComments={setpostComments}
                           postComments={postComments}
+                          likesCount={likesCount}
                           >
  
         </CommentComponent>

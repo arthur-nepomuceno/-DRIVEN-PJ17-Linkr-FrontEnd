@@ -1,38 +1,47 @@
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
-import { ReactTagify } from "react-tagify";
-import { ImPencil2 } from "react-icons/im";
-import { FaTrash } from "react-icons/fa";
-import { HiOutlineHeart } from "react-icons/hi";
 import { useState, useContext } from "react";
-import { decodeToken } from "react-jwt";
 import UserContext from "../contexts/UserContext";
 import axios from "axios";
-import { AiFillHeart, AiOutlineComment } from "react-icons/ai";
-import { BiRepost } from "react-icons/bi";
 import { TbSend } from "react-icons/tb";
 
 export default function CommentComponent({ postId, userImage , show, setpostComments, postComments }) {
-
-   
+    console.log(postId)
     const { token } = useContext(UserContext);
     const postCommentsAPI = `http://localhost:5000/comments`;
     const [comments, setComments] = useState("");
-   
-   
+    const getCommentsAPI = `http://localhost:5000/comments/${postId}`;
+
+        async function renderpostComment(){
+            try {
+                const config = {headers: {Authorization: `Bearer ${token.token}`}}
+                const response = await axios.get(getCommentsAPI, config);
+                setpostComments(response.data);
+                return;
+            } catch (error) {
+                return alert(`It wasn't possible to comment the post.`)
+            }
+        }
+
     async function postComment() {
-        
+       
         const body = { postId , comment:comments};   
-    
+
+        if(comments === "") {
+            return alert(` Send a comment.`)
+        }
+
             try {
                 const config = { headers: { Authorization: `Bearer ${token.token}` } }
                 await axios.post(postCommentsAPI, body, config);
                 setComments("")
+                renderpostComment(postId)
                 return;
-              
+            
             } catch (error) {
                 return alert(`It wasn't possible to comment the post.`)
             }
+
+            
         
     }
     return (
@@ -43,13 +52,13 @@ export default function CommentComponent({ postId, userImage , show, setpostComm
                         {postComments.length === 0 ?
                       <p></p> 
                     :
-                    postComments.map((extract) => {
+                    postComments.map((e) => {
                         return(
                             <div id="oneComment">
-                                <img src={extract.userimage} alt="imagem da url" />
+                                <img src={e.userimage} alt="imagem da url" />
                                 <span>
-                                    <h5>{extract.username}</h5>
-                                    <h4>{extract.comment}</h4>
+                                    <h5>{e.username}</h5>
+                                    <h4>{e.comment}</h4>
                                 </span>
   
                           </div>
