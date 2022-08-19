@@ -235,7 +235,7 @@ const Container = styled.div`
     z-index:1;
 
     div#teste{
-        position: relative;
+        position: sticky;
         margin-top:-10px;
   
     }
@@ -243,7 +243,7 @@ const Container = styled.div`
     div#user {
         width: 55px;
         height: 100%;
-        position: absolute;
+        position: absolute ;
         top: 7%;
         left: 3%;
         display: flex;
